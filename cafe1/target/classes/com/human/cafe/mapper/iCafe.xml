@@ -6,4 +6,13 @@
 <select id="getMenuList" resultType="com.human.cafe.Menu">
 	select code,name,price from menu order by code
 </select>
+<insert id="insertMenu">
+	insert into menu values(seq_menu.nextval,#{param1},#{param2})	
+</insert>
+<update id="updateMenu">
+	update menu set name=#{param2},price=#{param3} where code=#{param1}
+</update>
+<delete id="deleteMenu">
+	delete from menu where code=#{param1}
+</delete>
 </mapper>

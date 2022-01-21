@@ -5,6 +5,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.Locale;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.apache.ibatis.session.SqlSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -40,9 +42,9 @@ public class HomeController {
 		model.addAttribute("ml",cafe.getMenuList());
 		return "home";
 	}
-	@ResponseBody
+	@ResponseBody	//return "data"
 	@RequestMapping(value="/list",method=RequestMethod.POST,
-					produces="application/json;charset=utf-8")
+					produces="application/json;charset=utf-8")	//한글사용가능
 	public String list() {
 		iCafe cafe=sqlSession.getMapper(iCafe.class);
 		ArrayList<Menu> ml=cafe.getMenuList();
@@ -57,5 +59,55 @@ public class HomeController {
 			ja.add(jo);
 		}
 		return ja.toString();
+	}
+	@ResponseBody
+	@RequestMapping(value="/insertMenu",method=RequestMethod.POST,
+			produces="application/json;charset=utf-8")
+	public String insertMenu(HttpServletRequest hsr) {
+		String retval="";
+		try{
+			String name=hsr.getParameter("name");
+			int price=Integer.parseInt(hsr.getParameter("price"));
+			
+			iCafe cafe=sqlSession.getMapper(iCafe.class);
+			cafe.insertMenu(name,price);
+			retval="ok";
+		}catch(Exception e) {
+			retval="fail";
+		}
+		return retval;
+	}
+	   @ResponseBody
+	   @RequestMapping(value = "/updateMenu", method= RequestMethod.POST,
+			   produces="application/json;charset=utf-8")
+	   public String updateMenu(HttpServletRequest hsr) {
+	      String retval="";
+	      try {
+	         int code=Integer.parseInt(hsr.getParameter("code"));
+	         String name=hsr.getParameter("name");
+	         int price=Integer.parseInt(hsr.getParameter("price"));
+	         
+	         iCafe cafe=sqlSession.getMapper(iCafe.class);
+	         cafe.updateMenu(code,name,price);
+	         retval="ok";
+	      } catch(Exception e) {
+	         retval="fail";
+	      }
+	      return retval;
+	   }
+	@ResponseBody
+	@RequestMapping(value="/deleteMenu",method=RequestMethod.POST)
+	public String deleteMenu(HttpServletRequest hsr) {
+		String retval="";
+		try {
+			int code=Integer.parseInt(hsr.getParameter("code"));			
+			
+			iCafe cafe=sqlSession.getMapper(iCafe.class);
+			cafe.deleteMenu(code);
+			retval="ok";
+		} catch (Exception e) {
+			retval="fail";
+		}
+		return retval;
 	}
 }
