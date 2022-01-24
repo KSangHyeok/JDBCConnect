@@ -44,8 +44,12 @@
 	</td>
 	<td style='border:1px solid black;' valign=top>
 		<table>
-		<tr style='height:24px;'><td align=center>매출내역</td></tr>
-		<tr><td><select id=selSales style='width:230px' size=17></select></td></tr>		
+		<tr style='height:24px;'><td align=center>매출내역<button id=btnSummary align=right>Summary</button></td></tr>
+		<tr><td><select id=selSales style='width:230px' size=17>
+<c:forEach var="sales" items="${sl}">
+         <option>${sales.mobile} ${sales.name} x${sales.qty} ${sales.price} ${sales.sold_time} </option>
+</c:forEach>
+		</select></td></tr>		
 		</table>
 	</td>
 </tr>
@@ -67,11 +71,49 @@
 	</td>
 </tr>
 </table>
+</div>
+<div style="display:none" id=dlgSales>
+<table>
+			<tr>
+				<td><select style='width: 200px' size=20 id=salesMenu>
+						
+				</select></td>
+				<td><select style='width: 200px' size=20 id=salesMobile>
+						
+				</select></td>
+			</tr>
+		</table>
+</div>
 </body>
 <script src='https://code.jquery.com/jquery-3.5.0.js'></script>
 <script src='https://code.jquery.com/ui/1.13.0/jquery-ui.js'></script>
 <script>
 $(document)
+.on('click','#btnSummary',function(){
+	$('#dlgSales').dialog({
+		title:'매출 요약(메뉴별/고객별)',
+			modal:true,
+			width:500,
+			open:function(){
+				console.log('dlgSales open');
+				$.post("/cafe/salesMenu",{},function(txt){
+					console.log(txt);
+					$('#salesMenu').empty();
+					for(i=0;i<txt.length;i++){
+						let str='<option>'+txt[i]['name']+', '+txt[i]['total']+'</option>';
+						$('#salesMenu').append(str);
+					}
+				},'json');
+				$.post("/cafe/salesMobile",{},function(txt){					
+					$('#salesMobile').empty();
+					for(i=0;i<txt.length;i++){
+						let str='<option>'+txt[i]['mobile']+', '+txt[i]['total']+'</option>';
+						$('#salesMobile').append(str);
+					}
+				},'json');				
+			}			
+	});
+})
 .on('click','#btnOrder',function(){
 	if($('#mobile').val()==''){
 		if(confirm('모바일번호를 입력하시겠습니까?')) return false;
@@ -80,8 +122,22 @@ $(document)
 	$('#selOrder option').each(function(){
 		let str='<option>'+$('#mobile').val()+' '+$(this).text()+'</option>';
 		$('#selSales').append(str);
+		str=$(this).text();
+		let ar=str.split(' ');
+		// AJAX 호출로 Database에 주문내역 저장 by calling$.post();
+		let oParam={mobile:$('#mobile').val(),menu_code:$(this).val(),qty:ar[1].substr(1),price:ar[2]};
+		console.log(oParam);
+		$.post('/cafe/insertSales',oParam,function(txt){
+			if(txt=='ok'){
+				$('#selOrder').empty();
+				$('#total,#mobile').val('');
+			}else{
+				
+			}
+				
+		},'text')
 	});
-	// AJAX 호출로 Database에 주문내역 저장 by calling$.post();
+	
 	return false;
 })
 .on('click','#btnCancel',function(){
@@ -182,10 +238,10 @@ $(document)
 ;
 function loadMenu(selTarget){	//중복되는 코드-> 한묶음-> 호출(코드 본체 대치)
 	$('#'+selTarget).empty();
-	$.post('/cafe/list',{},function(txt){				
+	$.post('/cafe/list',{},function(txt){
 		console.log(txt);
 		for(i=0;i<txt.length; i++){
-			let mo=txt[i];			
+			let mo=txt[i];
 			let str='<option value='+mo['code']+'>'+mo['name']+' '+mo['price']+'</option>'
 			$('#'+selTarget).append(str);
 		}

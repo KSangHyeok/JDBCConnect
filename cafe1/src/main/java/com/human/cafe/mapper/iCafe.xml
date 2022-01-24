@@ -15,4 +15,22 @@
 <delete id="deleteMenu">
 	delete from menu where code=#{param1}
 </delete>
+<insert id="insertSales">
+	insert into cafe_sales values (seq_code.nextval,#{param1},#{param2},#{param3},to_char(sysdate,'YYYYMMDDHHMI'),#{param4})
+</insert>
+<select id="getSales" resultType="com.human.cafe.Cafe_sales">
+	select a.mobile,b.name,a.qty,a.price,a.sold_time 
+	from cafe_sales a, menu b
+	where a.menu_code=b.code 
+	order by a.sold_time desc
+</select>
+<select id="salesMenu" resultType="com.human.cafe.Sales">
+	select b.name,sum(a.price) as total from cafe_sales a, menu b 
+	where a.menu_code=b.code group by b.name 
+	order by b.name
+</select>
+<select id="salesMobile" resultType="com.human.cafe.Sales">
+	select mobile as name,sum(price) as total from cafe_sales group by mobile 
+	order by mobile
+</select>
 </mapper>

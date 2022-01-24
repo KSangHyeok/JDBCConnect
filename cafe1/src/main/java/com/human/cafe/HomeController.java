@@ -37,9 +37,11 @@ public class HomeController {
 	@RequestMapping(value = "/", method = RequestMethod.GET)
 	public String home(Model model) {
 		iCafe cafe=sqlSession.getMapper(iCafe.class);
+//		ArrayList<Cafe_sales> sl=cafe.getSales();
 //		ArrayList<Menu> ml=cafe.getMenuList();
 //		System.out.println("menu length:"+ml.size());
 		model.addAttribute("ml",cafe.getMenuList());
+		model.addAttribute("sl",cafe.getSales());
 		return "home";
 	}
 	@ResponseBody	//return "data"
@@ -109,5 +111,54 @@ public class HomeController {
 			retval="fail";
 		}
 		return retval;
+	}
+	@ResponseBody
+	@RequestMapping(value="/insertSales",method=RequestMethod.POST,
+			 produces="application/json;charset=utf-8")
+	public String insertSales(HttpServletRequest hsr) {
+		String retval="";
+		try {
+		int menu_code=Integer.parseInt(hsr.getParameter("menu_code"));
+		int qty=Integer.parseInt(hsr.getParameter("qty"));
+		int price=Integer.parseInt(hsr.getParameter("price"));
+		String mobile=hsr.getParameter("mobile");
+		
+		iCafe cafe=sqlSession.getMapper(iCafe.class);
+		cafe.insertSales(menu_code, qty, price, mobile);
+		retval="ok";
+		}catch(Exception e) {
+			retval="fail";
+		}
+		return retval;
+	}
+	@ResponseBody
+	@RequestMapping(value="/salesMenu",method=RequestMethod.POST,
+			 produces="application/json;charset=utf-8")
+	public String salesMenu() {								
+			iCafe cafe=sqlSession.getMapper(iCafe.class);
+			ArrayList<Sales> ml=cafe.salesMenu();			
+			JSONArray ja=new JSONArray();
+			for(int i=0;i<ml.size();i++) {
+				JSONObject jo=new JSONObject();
+				jo.put("name",ml.get(i).getName());
+				jo.put("total",ml.get(i).getTotal());				
+				ja.add(jo);
+			}
+			return ja.toString();
+	}
+	@ResponseBody
+	@RequestMapping(value="/salesMobile",method=RequestMethod.POST,
+			 produces="application/json;charset=utf-8")
+	public String salesMobile() {								
+			iCafe cafe=sqlSession.getMapper(iCafe.class);
+			ArrayList<Sales> ml=cafe.salesMobile();			
+			JSONArray ja=new JSONArray();
+			for(int i=0;i<ml.size();i++) {
+				JSONObject jo=new JSONObject();
+				jo.put("mobile",ml.get(i).getName());
+				jo.put("total",ml.get(i).getTotal());				
+				ja.add(jo);
+			}
+			return ja.toString();
 	}
 }

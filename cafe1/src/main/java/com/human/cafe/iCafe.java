@@ -7,4 +7,8 @@ public interface iCafe {
 	void insertMenu(String name,int price);
 	void updateMenu(int code, String name,int price);
 	void deleteMenu(int code);
+	void insertSales(int menu_code,int qty,int price,String mobile);
+	ArrayList<Cafe_sales> getSales();
+	ArrayList<Sales> salesMenu();
+	ArrayList<Sales> salesMobile();
 }
