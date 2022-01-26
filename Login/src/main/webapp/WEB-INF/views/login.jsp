@@ -16,7 +16,7 @@
 <td>비밀번호<input type=password id=passcode name=passcode value=""></td>
 </tr>
 <tr>
-<td><input type=button id=btnLogin value="로그인"><input type=reset value="취소"></td>
+<td><input type=button id=btnLogin value="로그인"><input type=button id=btnCan value="취소"></td>
 </tr>
 </table>
 </body>
@@ -41,10 +41,13 @@ $(document)
 			return false;
 		}else{
 			alert("아이디 또는 비밀번호가 틀립니다");
+			break;
 		}
-		}
-		
+		}		
 	},'json');
+})
+.on('click','#btnCan',function(){
+	document.location='/Login/';
 })
 </script>
 </html>

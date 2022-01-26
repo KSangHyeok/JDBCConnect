@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.Locale;
 
+import javax.servlet.ServletRequest;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
@@ -46,22 +47,26 @@ public class HomeController {
 	public String signon(Model model) {
 		return "signon";
 	}
+	@ResponseBody
 	@RequestMapping(value = "/signon_check", method = RequestMethod.POST,
 					produces="application/json;charset=utf-8")
 	public String signon_check(HttpServletRequest hsr) {
-		String name=hsr.getParameter("name");
+		String retval="";
+	
+		try{
+			String name=hsr.getParameter("name");
 		String gender=hsr.getParameter("gender");
 		String userid=hsr.getParameter("userid");
 		String passcode=hsr.getParameter("passcode");
-		String[] in=hsr.getParameterValues("interest");
+		String interest=hsr.getParameter("interest");
 		
-		String interest="";
-		for(int i=0;i<in.length;i++) {
-			interest+=in[i];
-		}
 		iLogin login=sqlSession.getMapper(iLogin.class);
 		login.insertSignon(name,gender,userid,passcode,interest);
-		return "login";
+			retval="ok";
+		}catch(Exception e) {
+	         retval="fail";
+	      }
+		return retval;
 	}
 	@ResponseBody
 	@RequestMapping(value="/login_check",method=RequestMethod.POST,
@@ -99,11 +104,31 @@ public class HomeController {
 	      }
 	      return retval;
 	   }
-	@RequestMapping(value = "/logout_check", method = RequestMethod.GET)
-	public String logout_check(Model model) {
+	@RequestMapping(value = "/logout_check", method = RequestMethod.GET,
+					produces="application/json;charset=utf-8")
+	public String logout_check(HttpServletRequest request) {
+		HttpSession session = request.getSession(true);
 		String userid=(String)session.getAttribute("userid");
-		return "home";
+		
+		iLogin login=sqlSession.getMapper(iLogin.class);
+		login.updateLogout(userid);
+		session.invalidate();
+		return "redirect:/";
 	}
-	
+	@ResponseBody
+	@RequestMapping(value="/name_check",method=RequestMethod.POST,
+				produces="application/json;charset=utf-8")
+	public String name_check() {
+		iLogin login=sqlSession.getMapper(iLogin.class);
+		ArrayList<Member> ml=login.getLogin();
+		JSONArray ja=new JSONArray();
+		for(int i=0;i<ml.size();i++) {
+		JSONObject jo=new JSONObject();
+		jo.put("userid",ml.get(i).getUserid());
+		jo.put("passcode",ml.get(i).getPasscode());
+		ja.add(jo);
+		}
+	return ja.toString();
+	}
 	
 }

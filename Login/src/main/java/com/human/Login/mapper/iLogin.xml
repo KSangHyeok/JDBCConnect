@@ -10,6 +10,9 @@
 	select userid,passcode from member order by userid
 </select>
 <update id="updateLogin">
-	update member set login_time=to_char(sysdate,'YY/MM/DD/HH:MI') where userid=#{param1}
+	update member set login_time=to_char(sysdate,'YY/MM/DD/HH24:MI') where userid=#{param1}
+</update>
+<update id="updateLogout">
+	update member set logout_time=to_char(sysdate,'YY/MM/DD/HH24:MI') where userid=#{param1}
 </update>
 </mapper>

@@ -7,7 +7,7 @@
 <title>Insert title here</title>
 </head>
 <body>
-<form method=POST action="/Login/signon_check">
+
  <table align=center class="mbs_table">
         <tr>
             <td align=left>실명</td>
@@ -41,17 +41,51 @@
         </tr>
         <tr>
             <td colspan=2>
-                <input type=submit value='가입완료'> &nbsp;&nbsp;
+                <input type=button id=btnGo value='가입완료'> &nbsp;&nbsp;
                 <input type=button id=btnCan value='취소'>
                 
             </td>
         </tr>
     </table>
-    </form>
+
 </body>
 <script src='https://code.jquery.com/jquery-3.5.0.js'></script>
 <script src='https://code.jquery.com/ui/1.13.0/jquery-ui.js'></script>
 <script>
-
+$(document)
+.on('click','#btnGo',function(){
+	if($('#passcode').val()!=$('#passcode1').val()){
+		alert('비번이 다릅니다.');
+		return false;
+	}
+	let str="";
+	$.post("/Login/name_check",{},function(txt){
+	$('input[name=interest]:checked').each(function(){
+         str+=$(this).val()+' ';
+      });
+		console.log(str);
+		for(let i=0;i<txt.length;i++){
+			console.log($('#userid').val());
+			console.log(txt[i]['userid']);			
+			if($('#userid').val()==txt[i]['userid']){
+				alert('중복된아이디가 있습니다');			
+				break;
+			}else{
+				let oparam={name:$('#name').val(),gender:$("input[name='gender']:checked").val(),userid:$('#userid').val(),passcode:$('#passcode').val(),interest:str}
+				$.post("/Login/signon_check",oparam,function(txt1){
+					if(txt1=="ok"){
+						document.location='/Login/login';
+					}else{
+						alert('실패띠');
+					}
+				},'text');	
+				return false;
+			}
+		}
+	},'json');
+})
+.on('click','#btnCan',function(){
+	document.location='/Login/'
+})
 </script>
 </html>
