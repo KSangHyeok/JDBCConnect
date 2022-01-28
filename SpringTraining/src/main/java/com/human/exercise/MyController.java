@@ -1,7 +1,11 @@
 package com.human.exercise;
 
+import java.util.ArrayList;
+
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.ibatis.session.SqlSession;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -9,6 +13,47 @@ import org.springframework.web.bind.annotation.RequestMethod;
 
 @Controller
 public class MyController {
+	
+	@Autowired
+	private SqlSession sqlSession;
+	
+	@RequestMapping("/menuadd")
+		public String doMenuAdd() {
+			return "addMenu";
+		}
+	
+	
+	@RequestMapping(value="/addMenu")
+	public String addMenu(HttpServletRequest hsr) {
+		String mname=hsr.getParameter("menu_name");
+		int price=Integer.parseInt(hsr.getParameter("price"));
+		iEmp menu=sqlSession.getMapper(iEmp.class);
+		menu.addMenu(mname,price);
+		return "addMenu";
+	}
+		
+	@RequestMapping(value="/depart")
+	public String depart(Model m) {
+		iDepart depart=sqlSession.getMapper(iDepart.class);
+		ArrayList<Depart> coun=depart.getdepart();
+		m.addAttribute("de",coun);
+		return "depart";
+	}
+	@RequestMapping(value="/country")
+	public String country(Model m) {
+		iCountry con=sqlSession.getMapper(iCountry.class);
+		ArrayList<country> coun=con.getcon();
+		m.addAttribute("con",coun);
+		return "country";
+	}
+	
+	@RequestMapping(value="/emp")
+	public String doEmpList(Model m) {
+		iEmp emp=sqlSession.getMapper(iEmp.class);
+		ArrayList<Employee> alEmp=emp.getEmpList();
+		m.addAttribute("alEmp",alEmp);
+		return "emp";
+	}
 	@RequestMapping(value = "/look",method=RequestMethod.GET)
 	public String look(HttpServletRequest hsr,Model model) {
 		model.addAttribute("mobile","010-2565-6113");
@@ -26,6 +71,7 @@ public class MyController {
 		
 		return "/input";
 	}
+	
 	@RequestMapping(value="/calc")
 	public String calc(HttpServletRequest hsr,Model model) {	
 		try {

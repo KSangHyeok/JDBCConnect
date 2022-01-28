@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+    
+<mapper namespace="com.human.exercise.iEmp">
+<select id="getEmpList" resultType="com.human.exercise.Employee">
+	select employee_id,emp_name,email,phone_number,hire_date,salary	from employees order by employee_id
+</select>
+<insert id="addMenu">
+	insert into menu(code,name,price) values(seq_code.nextval,#{param1},#{param2})
+</insert>
+</mapper>
