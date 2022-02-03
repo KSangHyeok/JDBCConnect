@@ -9,4 +9,13 @@
 <insert id="addMenu">
 	insert into menu(code,name,price) values(seq_code.nextval,#{param1},#{param2})
 </insert>
+<insert id="insertRoom">
+	insert into room(roomcode,name,type,howmany,howmuch) values(seq_room.nextval,#{param1},#{param2},#{param3},#{param4})
+</insert>
+<insert id="insertType">
+	insert into roomtype(typecode,name) values(#{param1},#{param2})
+</insert>
+<select id="getRoom" resultType="com.human.exercise.iRoom">
+	select a.roomcode as roomcode,b.name as name,a.howmany as howmany,a.howmuch as howmuch from room a,roomtype b where b.typecode=a.type
+</select>
 </mapper>

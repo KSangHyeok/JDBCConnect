@@ -11,11 +11,50 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
+
 @Controller
 public class MyController {
 	
 	@Autowired
 	private SqlSession sqlSession;
+	
+	@RequestMapping(value = "/room", method = RequestMethod.GET)
+	public String room(Model model) {
+		iEmp room=sqlSession.getMapper(iEmp.class);
+		model.addAttribute("room",room.getRoom());		
+		return "addRoom";
+	}
+	
+	@RequestMapping("/addtype")
+	public String typeAdd() {
+		return "typeadd";
+	}
+	
+	@RequestMapping(value="/typeadd")
+	public String addType(HttpServletRequest hsr) {
+		int type=Integer.parseInt(hsr.getParameter("typecode"));
+		String name=hsr.getParameter("name");
+				
+		iEmp room=sqlSession.getMapper(iEmp.class);
+		room.insertType(type,name);
+		return "typeadd";
+	}
+	
+//	@RequestMapping("/room")
+//	public String doRoomAdd() {
+//		return "addRoom";
+//	}
+	
+	@RequestMapping(value="/addRoom")
+	public String addRoom(HttpServletRequest hsr) {
+		String name=hsr.getParameter("name");
+		int type=Integer.parseInt(hsr.getParameter("type"));
+		int howmany=Integer.parseInt(hsr.getParameter("howmany"));
+		int howmuch=Integer.parseInt(hsr.getParameter("howmuch"));
+		iEmp room=sqlSession.getMapper(iEmp.class);
+		room.insertRoom(name,type,howmany,howmuch);
+		return "redirect:/room";
+	}
 	
 	@RequestMapping("/menuadd")
 		public String doMenuAdd() {
