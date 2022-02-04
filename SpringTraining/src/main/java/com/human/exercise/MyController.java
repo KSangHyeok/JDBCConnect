@@ -18,10 +18,28 @@ public class MyController {
 	@Autowired
 	private SqlSession sqlSession;
 	
+	@RequestMapping("/deleteRoom")
+	public String deleteRoom(HttpServletRequest hsr) {
+		int roomcode=Integer.parseInt(hsr.getParameter("code"));
+		iEmp room=sqlSession.getMapper(iEmp.class);
+		room.deleteRoom(roomcode);
+		return "redirect:/room";
+	}
+	
+	@RequestMapping("/deleteMenu")
+	public String deleteMenu(HttpServletRequest hsr) {
+		int code=Integer.parseInt(hsr.getParameter("code"));
+		iEmp menu=sqlSession.getMapper(iEmp.class);
+		menu.deleteMenu(code);
+		return "redirect:/menuadd";
+	}
 	@RequestMapping(value = "/room", method = RequestMethod.GET)
 	public String room(Model model) {
 		iEmp room=sqlSession.getMapper(iEmp.class);
 		model.addAttribute("room",room.getRoom());		
+		
+		ArrayList<Roomtype> typeList=room.getRoomType();
+		model.addAttribute("types",typeList);
 		return "addRoom";
 	}
 	
@@ -48,7 +66,7 @@ public class MyController {
 	@RequestMapping(value="/addRoom")
 	public String addRoom(HttpServletRequest hsr) {
 		String name=hsr.getParameter("name");
-		int type=Integer.parseInt(hsr.getParameter("type"));
+		int type=Integer.parseInt(hsr.getParameter("roomtype"));
 		int howmany=Integer.parseInt(hsr.getParameter("howmany"));
 		int howmuch=Integer.parseInt(hsr.getParameter("howmuch"));
 		iEmp room=sqlSession.getMapper(iEmp.class);
@@ -57,18 +75,30 @@ public class MyController {
 	}
 	
 	@RequestMapping("/menuadd")
-		public String doMenuAdd() {
+		public String doMenuAdd(Model model) {
+		iEmp menu=sqlSession.getMapper(iEmp.class);
+		model.addAttribute("menu",menu.getMenu());
+		
+		
 			return "addMenu";
 		}
 	
 	
 	@RequestMapping(value="/addMenu")
 	public String addMenu(HttpServletRequest hsr) {
+		String strcode=hsr.getParameter("code");		
 		String mname=hsr.getParameter("menu_name");
 		int price=Integer.parseInt(hsr.getParameter("price"));
+		
 		iEmp menu=sqlSession.getMapper(iEmp.class);
-		menu.addMenu(mname,price);
-		return "addMenu";
+		if(strcode.equals("")) {
+			menu.addMenu(mname,price);
+		}else {
+			int code=Integer.parseInt(strcode);
+			menu.updateMenu(code,mname,price);
+		}
+		
+		return "redirect:/menuadd";
 	}
 		
 	@RequestMapping(value="/depart")

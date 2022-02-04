@@ -1,23 +1,31 @@
 package com.human.exercise;
 
 public class iRoom {
-	private int roomcode;
+	private int code;
+	private String roomname;
 	private String name;
 	private int howmany;
 	private int howmuch;
 	public iRoom() {
 	}
-	public iRoom(int roomcode, String name, int howmany, int howmuch) {
-		this.roomcode = roomcode;
+	public iRoom(int code, String roomname, String name, int howmany, int howmuch) {
+		this.code = code;
+		this.roomname = roomname;
 		this.name = name;
 		this.howmany = howmany;
 		this.howmuch = howmuch;
 	}
-	public int getRoomcode() {
-		return roomcode;
+	public int getCode() {
+		return code;
 	}
-	public void setRoomcode(int roomcode) {
-		this.roomcode = roomcode;
+	public void setCode(int code) {
+		this.code = code;
+	}
+	public String getRoomname() {
+		return roomname;
+	}
+	public void setRoomname(String roomname) {
+		this.roomname = roomname;
 	}
 	public String getName() {
 		return name;
@@ -37,4 +45,6 @@ public class iRoom {
 	public void setHowmuch(int howmuch) {
 		this.howmuch = howmuch;
 	}
+	
+	
 }

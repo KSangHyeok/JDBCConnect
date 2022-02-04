@@ -16,6 +16,23 @@
 	insert into roomtype(typecode,name) values(#{param1},#{param2})
 </insert>
 <select id="getRoom" resultType="com.human.exercise.iRoom">
-	select a.roomcode as roomcode,b.name as name,a.howmany as howmany,a.howmuch as howmuch from room a,roomtype b where b.typecode=a.type
+	select a.roomcode as code,a.name as roomname,b.name as name,a.howmany as howmany,a.howmuch as howmuch 
+	from room a,roomtype b 
+	where b.typecode=a.type
 </select>
+<select id="getMenu" resultType="com.human.exercise.iMenu">
+	select name,price,code from menu
+</select>
+<delete id="deleteMenu">
+	delete from menu where code=#{param1}
+</delete>
+<delete id="deleteRoom">
+	delete from room where roomcode=#{param1}
+</delete>
+<select id="getRoomType" resultType="com.human.exercise.Roomtype">
+	select typecode,name from roomtype order by typecode
+</select>
+<update id="updateMenu">
+	update menu set name=#{param2}, price=#{param3} where code=#{param1}
+</update>
 </mapper>

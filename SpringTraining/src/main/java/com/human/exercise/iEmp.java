@@ -8,4 +8,9 @@ public interface iEmp {
 	void insertRoom(String name,int type,int howmany, int howmuch);
 	void insertType(int typecode,String name);
 	ArrayList<iRoom> getRoom();
+	ArrayList<iMenu> getMenu();
+	void deleteMenu(int code);
+	void deleteRoom(int code);
+	ArrayList<Roomtype> getRoomType();
+	void updateMenu(int code,String mname,int price);
 }
