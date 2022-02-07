@@ -21,7 +21,7 @@
 	</td>
 	<td>
 		<form id=frmRoom action="/exercise/addRoom">
-		<input type=hidden id=code name=code>		
+		<input type=text id=code name=code readonly>		
 			<table>
 			<tr><td align=right>객실명:</td>
 				<td><input type=text name=name></td>
@@ -44,7 +44,8 @@
 			</tr>
 			<tr><td colspan=2 align=center>
 				<input type=submit value='추가'>
-				<input type=button value="삭제" id=Droom></td>
+				<input type=button value="삭제" id=Droom>
+				<input type=Reset value="비우기" id=reset></td>
 			</tr>
 			</table>					
 		</form>
@@ -81,5 +82,6 @@ $(document)
 	});
 	return false;
 })
+
 </script>
 </html>

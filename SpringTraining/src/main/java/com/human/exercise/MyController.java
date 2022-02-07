@@ -18,6 +18,12 @@ public class MyController {
 	@Autowired
 	private SqlSession sqlSession;
 	
+	@RequestMapping("/s")
+	public String s() {
+		
+		return "/StudentScore";
+	}
+	
 	@RequestMapping("/deleteRoom")
 	public String deleteRoom(HttpServletRequest hsr) {
 		int roomcode=Integer.parseInt(hsr.getParameter("code"));
@@ -65,12 +71,19 @@ public class MyController {
 	
 	@RequestMapping(value="/addRoom")
 	public String addRoom(HttpServletRequest hsr) {
+		String Scode=hsr.getParameter("code");
 		String name=hsr.getParameter("name");
 		int type=Integer.parseInt(hsr.getParameter("roomtype"));
 		int howmany=Integer.parseInt(hsr.getParameter("howmany"));
 		int howmuch=Integer.parseInt(hsr.getParameter("howmuch"));
 		iEmp room=sqlSession.getMapper(iEmp.class);
-		room.insertRoom(name,type,howmany,howmuch);
+		if(Scode.equals("")) {			
+			room.insertRoom(name,type,howmany,howmuch);
+		}else {
+			int code=Integer.parseInt(Scode);
+			room.updateRoom(code,name,type,howmany,howmuch);
+		}
+		
 		return "redirect:/room";
 	}
 	
