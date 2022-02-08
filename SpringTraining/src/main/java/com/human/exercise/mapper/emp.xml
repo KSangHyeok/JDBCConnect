@@ -38,4 +38,7 @@
 <update id="updateRoom">
 	update room set name=#{param2}, type=#{param3}, howmany=#{param4}, howmuch=#{param5} where roomcode=#{param1}
 </update>
+<select id="selectEmp" resultType="com.human.exercise.Emp">
+	select employee_id,emp_name,phone_number,hire_date,manager_id from employees where employee_id=#{param1}
+</select>
 </mapper>

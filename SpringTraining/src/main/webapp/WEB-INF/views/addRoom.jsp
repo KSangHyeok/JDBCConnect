@@ -13,14 +13,14 @@
 <tr>
 	<td>
 		<select id=selRoom style='width:200px;' size=10>
-	<c:forEach var="room" items="${room}">
-         <option value=${room.code}>${room.roomname} ${room.name} ${room.howmany} ${room.howmuch}</option>
-	</c:forEach>
+<%-- 	<c:forEach var="room" items="${room}"> --%>
+<%--          <option value=${room.code}>${room.roomname} ${room.name} ${room.howmany} ${room.howmuch}</option> --%>
+<%-- 	</c:forEach> --%>
 		</select>	
 		
 	</td>
 	<td>
-		<form id=frmRoom action="/exercise/addRoom">
+<!-- 		<form id=frmRoom action="/exercise/addRoom"> -->
 		<input type=text id=code name=code readonly>		
 			<table>
 			<tr><td align=right>객실명:</td>
@@ -28,11 +28,11 @@
 			</tr>
 			<tr><td align=right>타입:</td>
 				<td>
-				<select id=roomtype name=roomtype>
+				<select id=selType name=selType>
 					<option value=''>--</option>
-				<c:forEach items="${types }" var="roomtype">
-					<option value=${roomtype.typecode}>${roomtype.name}</option>
-				</c:forEach>
+<%-- 				<c:forEach items="${types }" var="roomtype"> --%>
+<%-- 					<option value=${roomtype.typecode}>${roomtype.name}</option> --%>
+<%-- 				</c:forEach> --%>
 				</select>
 				</td>
 			</tr>
@@ -48,7 +48,7 @@
 				<input type=Reset value="비우기" id=reset></td>
 			</tr>
 			</table>					
-		</form>
+<!-- 		</form> -->
 	</td>
 </tr>
 </table>
@@ -57,6 +57,34 @@
 <script src='https://code.jquery.com/ui/1.13.0/jquery-ui.js'></script>
 <script>
 $(document)
+.ready(function(){
+	$.ajax({url:"/exercise/roomlist",
+			data:{},
+			method:"GET",
+			datatype:"json",
+			success:function(txt){
+				console.log(txt);
+		for(i=0; i<txt.length; i++){
+			let str='<option value='+txt[i]['code']+'>'+txt[i]['roomname']+','+txt[i]['name']+','+txt[i]['howmany']+','+txt[i]['howmuch']+'</option>';
+			console.log(str);
+			$('#selRoom').append(str);
+			}
+		}	
+	});
+	$.ajax({url:"/exercise/typelist",
+		data:{},
+		method:"GET",
+		datatype:"json",
+		success:function(txt){
+			console.log(txt);
+	for(i=0; i<txt.length; i++){
+		let str='<option value='+txt[i]['typecode']+'>'+txt[i]['name']+'</option>';
+		console.log(str);
+		$('#selType').append(str);
+		}
+	}	
+});
+})
 .on('click','#Droom',function(){
 	document.location="/exercise/deleteRoom?code="+$('#code').val();
 	return false;
@@ -66,15 +94,16 @@ $(document)
 	$('#code').val($(this).val());		
 	console.log($('#code').val());
 	let str=$(this).text();
-	let ar=str.split(' ');
+	let ar=str.split(',');
 	$('input[name=name]').val($.trim(ar[0]));	
 	$('input[name=howmany]').val($.trim(ar[2]));
 	$('input[name=howmuch]').val($.trim(ar[3]));
 	let roomtype=$.trim(ar[1]);
-	console.log('roomtype['+roomtype+']');
 	$('#roomtype').val('');
+	roomtype=roomtype.replace(',','');
+	console.log('roomtype['+roomtype+']');
 // 	$("#roomtype option:contains("+roomtype+")").attr("selected","selected");
-	$('#roomtype option').each(function(){
+	$('#selType option').each(function(){
 		if($(this).text()==roomtype){
 			$(this).prop('selected','selected');
 			return false;

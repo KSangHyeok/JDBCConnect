@@ -14,4 +14,5 @@ public interface iEmp {
 	ArrayList<Roomtype> getRoomType();
 	void updateMenu(int code,String mname,int price);
 	void updateRoom(int code,String name,int type,int howmany,int howmuch);
+	ArrayList<Emp> selectEmp(int Keyword);
 }
