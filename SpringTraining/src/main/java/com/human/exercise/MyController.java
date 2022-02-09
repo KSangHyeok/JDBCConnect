@@ -22,10 +22,88 @@ public class MyController {
 	@Autowired
 	private SqlSession sqlSession;
 	
+	@RequestMapping("/hu")
+	public String Hu(Model model) {
+		IJob job=sqlSession.getMapper(IJob.class);
+		ArrayList<hum> jl=job.getHu();
+		
+		model.addAttribute("jobs",jl);
+		return "/hu";
+	}
+	
+	@ResponseBody
+	@RequestMapping(value="/dd",produces="application/json;charset=utf-8")
+	public String dodd(HttpServletRequest hsr) {
+		String eid=hsr.getParameter("eid");
+		IJob job=sqlSession.getMapper(IJob.class);
+		ArrayList<humm> ml=job.getHuu(eid);
+		JSONArray ja=new JSONArray();
+		for(int i=0;i<ml.size();i++) {
+			JSONObject jo=new JSONObject();
+			jo.put("eid",ml.get(i).getEmp_name());					
+			ja.add(jo);
+		}	
+		return ja.toString();
+	}
+	
+	@RequestMapping("/dept")
+	public String Dept(Model model) {
+		IJob job=sqlSession.getMapper(IJob.class);
+		ArrayList<EmpD> jl=job.getDid();
+		
+		model.addAttribute("jobs",jl);
+		return "/dept";
+	}
+	
+	@ResponseBody
+	@RequestMapping(value="/ee",produces="application/json;charset=utf-8")
+	public String doee(HttpServletRequest hsr) {
+		String eid=hsr.getParameter("eid");
+		IJob job=sqlSession.getMapper(IJob.class);
+		ArrayList<EmpF> ml=job.getFname(eid);
+		JSONArray ja=new JSONArray();
+		for(int i=0;i<ml.size();i++) {
+			JSONObject jo=new JSONObject();
+			jo.put("eid",ml.get(i).getEid());
+			jo.put("ename",ml.get(i).getEname());
+			jo.put("mobile",ml.get(i).getMobile());
+			jo.put("salary",ml.get(i).getSalary());			
+			ja.add(jo);
+		}	
+		return ja.toString();
+	}
+	
+	@RequestMapping("/job")
+	public String job(Model model) {
+		IJob job=sqlSession.getMapper(IJob.class);
+		ArrayList<Job> jl=job.jobList();
+		
+		model.addAttribute("jobs",jl);
+		return "/job";
+	}
+	
 	@RequestMapping("/emplist")
 	public String emplist() {
 		
 		return "/emplist";
+	}
+	
+	@ResponseBody
+	@RequestMapping(value="/position",produces="application/json;charset=utf-8")
+	public String doPosition(HttpServletRequest hsr) {
+		String jobid=hsr.getParameter("jobcode");
+		IJob job=sqlSession.getMapper(IJob.class);
+		ArrayList<EmpInfo> ml=job.getList(jobid);
+		JSONArray ja=new JSONArray();
+		for(int i=0;i<ml.size();i++) {
+			JSONObject jo=new JSONObject();
+			jo.put("eid",ml.get(i).getEid());
+			jo.put("ename",ml.get(i).getEname());
+			jo.put("mobile",ml.get(i).getMobile());
+			jo.put("dname",ml.get(i).getDname());			
+			ja.add(jo);
+		}	
+		return ja.toString();
 	}
 	
 	@ResponseBody
@@ -175,7 +253,7 @@ public class MyController {
 	}
 	
 	@RequestMapping(value="/addMenu")
-	public String addMenu(HttpServletRequest hsr) {
+	public void addMenu(HttpServletRequest hsr) {
 		String strcode=hsr.getParameter("code");		
 		String mname=hsr.getParameter("menu_name");
 		int price=Integer.parseInt(hsr.getParameter("price"));
@@ -188,7 +266,7 @@ public class MyController {
 			menu.updateMenu(code,mname,price);
 		}
 		
-		return "redirect:/menuadd";
+//		return "redirect:/menuadd";
 	}
 		
 	@RequestMapping(value="/depart")
