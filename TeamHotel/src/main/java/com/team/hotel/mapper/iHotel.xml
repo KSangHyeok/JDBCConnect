@@ -2,5 +2,20 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
     
-    <mapper namespace="com.human.hotel.iHotel">
-    </mapper>
+<mapper namespace="com.team.hotel.iHotel">
+	<select id="gettype" resultType="com.team.hotel.Typelist">
+	select type_code,type_name from roomtype
+	</select>
+	<select id="getroom" resultType="com.team.hotel.Roomlist">
+	select room_code,name,type,howmany,howmuch from room where type=#{param1}
+	</select>
+	<select id="getroomname" resultType="com.team.hotel.Roomlist">
+	select room_code,name from room where type=#{param1}
+	</select>
+	<select id="getbook" resultType="com.team.hotel.Booklist">
+	select a.book_id as book_id,a.room_code as room_code,a.start_dt as start_dt,a.end_dt as end_dt,a.howmany as howmany,a.howmuch as howmuch,
+    a.booker as booker,a.mobile as mobile,b.name as name 
+    from book a,room b
+    where a.room_code=b.room_code
+	</select>
+</mapper>
