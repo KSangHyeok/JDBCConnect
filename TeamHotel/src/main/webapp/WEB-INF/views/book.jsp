@@ -38,20 +38,13 @@ roomcode : <input type=text id=roomcode name=roomcode align=left>
 예약자 번호 : <input type=text id=mobile name=mobile align=left>
 </td></tr>
 <tr><td><input type=submit id=btnGo value="예약하기"></td></tr>
-<tr><td><button id=con>console.log</button></td></tr>
 </form>
 </table>
-<hr>
 </body>
 <script src='https://code.jquery.com/jquery-3.5.0.js'></script>
 <script src='https://code.jquery.com/ui/1.13.0/jquery-ui.js'></script>
 <script>
 $(document)
-.on('click','#con',function(){
-	console.log($('#start_dt').val());
-	console.log($('#end_dt').val());
-	console.log($('#sel').val());
-})
 .on('submit',function(){
 	alert(($('#howmany').val()));
 })

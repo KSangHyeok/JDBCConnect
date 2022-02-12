@@ -6,8 +6,12 @@
 	<select id="gettype" resultType="com.team.hotel.Typelist">
 	select type_code,type_name from roomtype
 	</select>
+	
 	<select id="getroom" resultType="com.team.hotel.Roomlist">
-	select room_code,name,type,howmany,howmuch from room where type=#{param1}
+	select a.room_code as room_code,a.howmany as howmany,a.howmuch as howmuch,
+    a.booker as booker,a.mobile as mobile,b.name as name,a.start_dt,a.end_dt
+    from book a,room b
+    where <![CDATA[a.room_code=b.room_code and b.type=#{param1} and a.start_dt > #{param3} and a.end_dt > #{param2} and a.howmany >= #{param4}]]>
 	</select>
 	<select id="getroomname" resultType="com.team.hotel.Roomlist">
 	select room_code,name from room where type=#{param1}
@@ -18,4 +22,37 @@
     from book a,room b
     where a.room_code=b.room_code
 	</select>
+	<insert id="insertbook">
+		insert into book values(seq_book_id.nextval,#{param1},#{param2},#{param3},#{param4},#{param5},#{param6},#{param7})
+	</insert>
+	<delete id="deletebook">
+		delete from book where book_id=#{param1}
+	</delete>
+<!-- 승혁이형 -->
+	<insert id="addType">
+		insert into roomtype values(seq_type_code.nextval,#{param1})
+	</insert>
+	<select id="selType" resultType="com.team.hotel.roomtypeDTO">
+		select type_code,type_name from roomtype order by type_code
+	</select>
+	<delete id="delType">
+		delete from roomtype where type_code=#{param1}
+	</delete>
+	<update id="updType">
+		update roomtype set type_name=#{param2} where type_code=#{param1}
+	</update>
+<!-- roomcontrol -->
+	<insert id="addRoom">
+		insert into room values(seq_room_code.nextval, #{param1},#{param2},#{param3},#{param4})
+	</insert>
+	<select id="selRoom" resultType="com.team.hotel.roomDTO">
+		select a.room_code, a.name, b.type_name, a.howmany, a.howmuch from room a, roomtype b where a.type=b.type_code order by type_code
+	</select>
+	<delete id="delRoom">
+		delete from room where room_code=#{param1}
+	</delete>
+	<update id="updRoom">
+		update room set name=#{param2}, type=#{param3}, howmany=#{param4}, howmuch=#{param5} where room_code=#{param1}
+	</update>
+	
 </mapper>

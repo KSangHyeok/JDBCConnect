@@ -42,6 +42,11 @@ input {	color:black;
 	<option value=2>2인</option>
 	<option value=3>3인</option>
 	<option value=4>4인</option>
+	<option value=5>5인</option>
+	<option value=6>6인</option>
+	<option value=7>7인</option>
+	<option value=8>8인</option>
+	<option value=9>9인</option>
 </select> </td></tr><tr><td>
 			<input type=button id=btns value="찾기"></td></tr><tr><td>
 	<select id=selRoom style='width:200px;' size=10>
@@ -50,12 +55,13 @@ input {	color:black;
 	</table>
 	</td><td>
 	<table><tr><td>	
-	예약번호<input type=text id=book_id name=book_id readonly></td></tr><tr><td>
-	숙박기간<input type=date id=start_dtt name=start_dtt>~<input type=date id=end_dtt name=end_dtt></td></tr><tr><td>
+	예약번호<input type=text id=book_id name=book_id readonly></td></tr><tr><td>	
+	객실종류<select id=type_codee name=type_codee>	
+	</td></tr><tr><td>
 	
-		객실종류<select id=type_codee name=type_codee>			
+		객실명<select type=text id=room_name name=room_name>		
 		</select></td></tr><tr><td>
-		객실명<select type=text id=room_name name=room_name>
+		숙박기간<input type=date id=start_dtt name=start_dtt>~<input type=date id=end_dtt name=end_dtt>
 		</select>
 		</td></tr><tr><td>
 	
@@ -64,6 +70,11 @@ input {	color:black;
 	<option value=2>2인</option>
 	<option value=3>3인</option>
 	<option value=4>4인</option>
+	<option value=5>5인</option>
+	<option value=6>6인</option>
+	<option value=7>7인</option>
+	<option value=8>8인</option>
+	<option value=9>9인</option>
 </select></td></tr><tr><td>
 	대표자명<input type=text id=booker name=booker></td></tr><tr><td>
 	모바일<input type=text id=mobile name=mobile></td></tr><tr><td>
@@ -100,27 +111,20 @@ $(document)
 		}
 	}	
 });
-	$.ajax({url:"/hotel/booklist",
-		data:{},
-		method:"GET",
-		datatype:"json",
-		success:function(txt){
-			
-	for(i=0; i<txt.length; i++){
-		let str='<option value='+txt[i]['book_id']+'>'+txt[i]['name']+' '+'</option>';
-		
-		$('#selBook').append(str);
-		}
-	}	
-});
+	booklist();
 	
 })
 .on('click','#btns',function(){
+	if($('#start_dt').val()=='' || $('#end_dt').val()==''){
+		alert('예약기간을 설정하세요');
+		return false;
+	}
 	$('#selRoom').empty();
 	$.ajax({url:"/hotel/roomlist",
 		data:{type_code:$('#type_code').val(),
 			  start_dt:$('#start_dt').val(),
-			  end_dt:$('#end_dt').val()},
+			  end_dt:$('#end_dt').val(),
+			  howmany:$('#howmany').val()},
 		method:"GET",
 		datatype:"json",
 		success:function(txt){
@@ -150,7 +154,7 @@ $(document)
 });
 })
 .on('click','#selRoom option',function(){
-	$('#room_name').empty();
+	clean();
 	$('#type_codee').val($(this).val());
 	
 	$('#start_dtt').val($('#start_dt').val());
@@ -183,9 +187,64 @@ $(document)
 });		
 	return false;
 })
-// .on('click','#start_dtt,#end_dtt',function(){
-	
-// })
+.on('click','#btnOk',function(){
+	if($('#booker').val()=='' || $('mobile').val()==''){
+		alert('대표자명 or 모바일을 적으세요');
+		return false;
+	}
+	$.ajax({url:"/hotel/roomok",
+		data:{start_dt:$('#start_dtt').val(),
+				end_dt:$('#end_dtt').val(),
+				type_code:$('#type_code').val(),
+				room_code:$('#room_name').val(),
+				howmany:$('#howmanyy').val(),
+				booker:$('#booker').val(),
+				mobile:$('#mobile').val(),
+				howmuch:$('#howmuch').val()},		
+		method:"POST",
+		datatype:"text",
+		beforeSend:function(){},
+		success:function(txt){
+			console.log(txt);
+				alert("예약완료");
+				booklist();		
+		}
+		
+});
+	return false;
+})
+.on('click','#selBook option',function(){
+	clean();
+	$('#book_id').val($(this).val());
+	let str=$(this).text();
+	let str1=str.replace('~',' ');
+	let ar=str1.split(' ');
+	console.log(ar);
+	$('#booker').val(ar[1]);
+	$('#start_dtt').val(ar[2]);
+	$('#end_dtt').val(ar[3]);
+}) 
+.on('click','#btnCan',function(){
+	if($('#book_id').val()==''){
+		alert('취소할 객실을 클릭하세요');
+	}else{
+		$.ajax({url:"/hotel/roomcan",
+			data:{book_id:$('#book_id').val()},		
+			method:"POST",
+			datatype:"text",
+			beforeSend:function(){},
+			success:function(txt){				
+					alert("예약취소완료");
+					booklist();		
+			}
+			
+	});
+	}
+})
+.on('click','#btnReset',function(){
+	clean();
+})
+
 function betweenDay(firstDate, secondDate)
         {             
             var firstDateObj = new Date(firstDate.substring(0, 4), firstDate.substring(4, 6) - 1, firstDate.substring(6, 8));
@@ -193,5 +252,25 @@ function betweenDay(firstDate, secondDate)
             var betweenTime = Math.abs(secondDateObj.getTime() - firstDateObj.getTime());
             return Math.floor(betweenTime / (1000 * 60 * 60 * 24));
         }
+function booklist(){
+	$('#selBook').empty();
+	$.ajax({url:"/hotel/booklist",
+		data:{},
+		method:"GET",
+		datatype:"json",
+		success:function(txt){
+			
+	for(i=0; i<txt.length; i++){
+		let str='<option value='+txt[i]['book_id']+'>'+txt[i]['name']+' '+txt[i]['booker']+' '+
+				txt[i]['start_dt']+'~'+txt[i]['end_dt']+'</option>';
+		
+		$('#selBook').append(str);
+		}
+	}	
+});
+}
+function clean(){
+	$('#book_id,#start_dtt,#end_dtt,#type_codee,#room_name,#hownamyy,#booker,#mobile,#howmuch').val('');
+}
 </script>
 </html>
