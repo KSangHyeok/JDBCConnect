@@ -19,4 +19,12 @@ public interface iHotel {
 	   
 	   ArrayList<roomtypeDTO> selType();
 	   ArrayList<roomDTO> selRoom();
+	//김유진씨
+	   Member idcheck(String userid);
+		Member usercheck(String userid);
+		void insertMember(String userid,String passcode,String name,String mobile);
+		void deleteMember(String userid);
+		void loginMember(String userid);
+		void logoutMember(String userid);
+//		회원가입/회원탈퇴/로그인/로그아웃
 }

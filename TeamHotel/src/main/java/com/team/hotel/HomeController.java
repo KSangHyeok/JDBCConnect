@@ -6,6 +6,7 @@ import java.util.Date;
 import java.util.Locale;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 
 import org.apache.ibatis.session.SqlSession;
 import org.slf4j.Logger;
@@ -28,6 +29,11 @@ import net.sf.json.JSONObject;
 public class HomeController {
 	@Autowired
 	private SqlSession sqlSession;
+	
+	@RequestMapping(value = "/", method = RequestMethod.GET)
+	public String home() {
+		return "home";
+	}
 	
 	//예약관리
 	@RequestMapping(value = "/serva")
@@ -111,6 +117,7 @@ public class HomeController {
 		int howmany=Integer.parseInt(hsr.getParameter("howmany"));
 		iHotel room=sqlSession.getMapper(iHotel.class);
 		ArrayList<Roomlist> list=room.getroom(type_code,start_dt,end_dt,howmany);
+		System.out.println(list);
 		JSONArray ja=new JSONArray();
 		for(int i=0;i<list.size();i++) {
 			JSONObject jo=new JSONObject();
@@ -141,14 +148,14 @@ public class HomeController {
 	}
 	//예약하기
 	@RequestMapping(value = "/book")
-	public String home(HttpServletRequest hsr,Model model) {
+	public String booke(HttpServletRequest hsr,Model model) {
 		//객실보기에서 type name 넘겨받기
 //		int type=Integer.parseInt(hsr.getParameter(type));
 //		int name=hsr.getParameter(name);
 //		
 //		model.addAttribute("type",type);
 //		model.addAttribute("name",name);
-		return "/book";
+		return "book";
 	}
 	//에약확인 베이스
 	@RequestMapping(value="/bookcheck")
@@ -169,11 +176,7 @@ public class HomeController {
 		model.addAttribute("roomcode",roomcode);
 		return "/confirm";
 	}
-	//승혁이형
-	@RequestMapping(value = "/", method = RequestMethod.GET)   //show home
-	   public String home() {
-	      return "home";
-	   }
+	//승혁이형	
 	@RequestMapping(value = "/controltype")      //show typecontrol
 	   public String typecontrol() {
 	      return "typecontrol";
@@ -276,4 +279,141 @@ public class HomeController {
      }
      return ja.toString();
   }
+  //김유진씨
+  
+//	-------------------------------------------------------------------------------
+//	로그인/로그아웃
+//	-------------------------------------------------------------------------------
+	
+	@RequestMapping("/login")
+	public String goLogin() {
+		return "login";
+	}
+	@RequestMapping(value="/login_check",method=RequestMethod.POST)
+	public String doLogin(HttpServletRequest hsr) {
+		HttpSession session=hsr.getSession();
+		String userid=hsr.getParameter("userid");
+		
+		iHotel hotel=sqlSession.getMapper(iHotel.class);
+		hotel.loginMember(userid);
+		session.setAttribute("userid", userid);
+		return "home";
+	}
+	@ResponseBody
+	@RequestMapping(value="/user_check", method=RequestMethod.POST)
+	public String user_check(HttpServletRequest hsr) {
+		HttpSession session=hsr.getSession();
+		String flag="";
+		try {
+			String userid=hsr.getParameter("userid");
+			String passcode=hsr.getParameter("passcode");
+			System.out.println("입력한 패스워드 :"+passcode);
+			
+			iHotel hotel=sqlSession.getMapper(iHotel.class);
+			Member member=hotel.usercheck(userid);
+			System.out.println("존재하는 패스워드:["+member.getPasscode()+"]");
+			if(!member.getPasscode().equals(passcode)) {
+				flag="fail";
+			} else {
+				System.out.println("u_Type:["+member.getUser_type()+"]");
+				session.setAttribute("u_type", member.getUser_type());
+			}
+		}catch(Exception e){ // 해당 아이디가 DB에 없는 경우 생길 오류 대비
+			System.out.println(e.getMessage());
+			flag="fail";
+		}		
+		return flag;
+	}
+	
+	@RequestMapping("/logout")
+	public String goLogout(HttpServletRequest hsr) {
+		HttpSession session=hsr.getSession();
+		String userid=(String) session.getAttribute("userid");
+		System.out.println("받아온 아이디:["+userid+"]");
+		iHotel hotel=sqlSession.getMapper(iHotel.class);
+		hotel.logoutMember(userid);
+		session.invalidate();
+		return "redirect:/";
+	}
+//	-------------------------------------------------------------------------------
+//	회원가입
+//	-------------------------------------------------------------------------------
+	@RequestMapping("/register")
+	public String goSignon() {
+		return "signon";
+	}
+	@RequestMapping(value="/sign_check",method=RequestMethod.POST)
+	public String doSignon(HttpServletRequest hsr) {
+		String name=hsr.getParameter("name");
+		String userid=hsr.getParameter("userid");
+		String passcode=hsr.getParameter("passcode");
+		String mobile=hsr.getParameter("mobile");
+		System.out.println("이름:["+name+"]");
+		System.out.println("아이디:["+userid+"]");
+		System.out.println("패스워드:["+passcode+"]");
+		System.out.println("전화번호:["+mobile+"]");
+		
+		iHotel hotel=sqlSession.getMapper(iHotel.class);
+		hotel.insertMember(userid, passcode, name, mobile);
+		return "redirect:/login";
+	}
+	@ResponseBody
+	@RequestMapping(value="/id_check",method=RequestMethod.POST)
+	public String id_check(HttpServletRequest hsr) {
+		String userid=hsr.getParameter("userid");
+		System.out.println("입력한 아이디:["+userid+"]");
+		
+		iHotel hotel=sqlSession.getMapper(iHotel.class);
+		String retext="ok";
+		try {
+			Member member=hotel.idcheck(userid);
+			System.out.println("존재하는 아이디:["+member.getUserid()+"]");
+			retext="fail";
+		} catch (Exception e) {//userid가 없을 경우 나는 에러방지
+			retext="ok";
+		}
+		return retext;
+	}
+	
+//	-------------------------------------------------------------------------------
+//	회원탈퇴
+//	-------------------------------------------------------------------------------
+	@RequestMapping("/account_delete")
+	public String account_delete() {
+		return "deleteMember";
+	}
+	@RequestMapping(value="/delete_account",method=RequestMethod.POST)
+	public String delete_account(HttpServletRequest hsr) {
+		HttpSession session=hsr.getSession();
+		String userid=(String) session.getAttribute("userid");
+		System.out.println("받아온 아이디:["+userid+"]");
+		
+		iHotel hotel=sqlSession.getMapper(iHotel.class);
+		hotel.deleteMember(userid);
+		session.invalidate();
+		return "redirect:/";
+	}
+	@ResponseBody
+	@RequestMapping(value="/passcode_check",method=RequestMethod.POST)
+	public String pass_check(HttpServletRequest hsr) {
+		String retext="";
+		try {
+			String userid=hsr.getParameter("userid");
+			String passcode=hsr.getParameter("passcode");
+			System.out.println("입력한 아이디:["+userid+"]");
+			System.out.println("입력한 패스워드:["+passcode+"]");
+			
+			iHotel hotel=sqlSession.getMapper(iHotel.class);
+			Member member=hotel.usercheck(userid);
+			System.out.println("존재하는 패스워드:["+member.getPasscode()+"]");
+			if(member.getPasscode().equals(passcode)) retext="ok";
+			else retext="fail";
+		} catch (Exception e) {//userid가 없을 경우 나는 에러방지
+			retext="fail";
+		}
+		System.out.println("리턴값:"+retext);
+		return retext;
+	}
+	//--------------------------------------------------------
+	
 }

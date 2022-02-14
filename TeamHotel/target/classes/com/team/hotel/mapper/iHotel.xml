@@ -8,10 +8,11 @@
 	</select>
 	
 	<select id="getroom" resultType="com.team.hotel.Roomlist">
-	select a.room_code as room_code,a.howmany as howmany,a.howmuch as howmuch,
-    a.booker as booker,a.mobile as mobile,b.name as name,a.start_dt,a.end_dt
-    from book a,room b
-    where <![CDATA[a.room_code=b.room_code and b.type=#{param1} and a.start_dt > #{param3} and a.end_dt > #{param2} and a.howmany >= #{param4}]]>
+	<![CDATA[select room_code, howmany, howmuch, name
+    from room
+    where howmany >= #{param4} and type=#{param1} and not room_code in(select a.room_code from book a,room b
+    where a.room_code=b.room_code and 
+    (a.start_dt >= #{param2} and a.end_dt < #{param3} or a.end_dt > #{param2} and a.end_dt <= #{param3}))]]>
 	</select>
 	<select id="getroomname" resultType="com.team.hotel.Roomlist">
 	select room_code,name from room where type=#{param1}
@@ -54,5 +55,25 @@
 	<update id="updRoom">
 		update room set name=#{param2}, type=#{param3}, howmany=#{param4}, howmuch=#{param5} where room_code=#{param1}
 	</update>
-	
+<!-- 김유진씨 -->
+	<select id="usercheck" resultType="com.team.hotel.Member">
+	select userid,passcode,user_type from member where userid=#{param1}
+</select>
+<select id="idcheck" resultType="com.team.hotel.Member">
+	select userid from member where userid=#{param1}
+</select>
+<insert id="insertMember">
+	insert into member(userid,passcode,name,mobile,user_type)
+	 values(#{param1},#{param2},#{param3},#{param4},2)
+</insert>
+<update id="loginMember">
+	update member set login_time=to_char(sysdate,'YYYY/MM/DD/HH24:MI') where userid=#{param1}
+</update>
+<update id="logoutMember">
+	update member set logout_time=to_char(sysdate,'YYYY/MM/DD/HH24:MI') where userid=#{param1}
+</update>
+<delete id="deleteMember">
+	delete from member where userid=#{param1}
+</delete>
+<!--                 회원가입/로그인/회원탈퇴/로그아웃                   -->
 </mapper>

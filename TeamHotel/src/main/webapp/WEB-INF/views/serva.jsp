@@ -10,7 +10,7 @@
 table {border-collapse:collapse;
 		border:1px solid black;
 		height:300px;
-		weight:300px;
+		weight:300px;		
 		}
 /* th,td {border:1px solid black; */
 /* 		color:black; */
@@ -20,15 +20,35 @@ input {	color:black;
 		font-weight:bold;
 		font-size:10px;
 		}
-/* body {background-image:url(https://cdn.pixabay.com/photo/2018/02/11/09/37/matrix-full-3145364_960_720.jpg); */
-/* 		background-repeat:no-repeat; */
-/* 		background-position:center; */
-/*  		background-size:cover; */
-/*  		height:100vh; */
-/* 		} */
 
+ul{	list-style:none; }
+	li{
+/* 		list-style : none; */
+		border:0;
+		float:left;
+	}
+	a{color:#333;}
+	body{color:#333; height:1500px;}
+	*{padding:0;margin:0;}
+	#div_1{
+		height:10vh;
+		float:left;
+		margin-lefr:2%;
+		width:100%;
+	}
+	.info{
+		font-size:9pt;
+		color:grey;
+		text-align:center;
+	}
+	div{heright:1500px;}
 </style>
+
+
 <body>
+<header>
+<jsp:include page="header.jsp" />
+</header>
 <table>
 	<tr><td>
 	<table><tr><td>
@@ -78,7 +98,7 @@ input {	color:black;
 </select></td></tr><tr><td>
 	대표자명<input type=text id=booker name=booker></td></tr><tr><td>
 	모바일<input type=text id=mobile name=mobile></td></tr><tr><td>
-	숙박비<input type=number id=howmuch name=howmuch readonly></td></tr><tr><td>
+	숙박비<input type=number id=howmuch name=howmuch></td></tr><tr><td>
 		<button id=btnOk>예약확정</button>
 		<button id=btnCan>예약취소</button>
 		<button id=btnReset>비우기</button>
@@ -92,7 +112,13 @@ input {	color:black;
 	</table>
 	</td></tr>
 </table>
+<footer>
+<jsp:include page="footer.jsp" />
+</footer>
 </body>
+
+
+
 <script src='https://code.jquery.com/jquery-3.5.0.js'></script>
 <script src='https://code.jquery.com/ui/1.13.0/jquery-ui.js'></script>
 <script>
