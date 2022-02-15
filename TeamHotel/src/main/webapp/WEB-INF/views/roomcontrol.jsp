@@ -7,22 +7,49 @@
 <meta charset="UTF-8">
 <title>roomControl</title>
 </head>
+<c:set var="path" value="${pageContext.request.contextPath}"/>
+ <link href="${path}/resources/css/Homeinfo.css" rel="stylesheet" >
+<jsp:include page="header.jsp" />
 <body>
-<h1><a href="/hotel/">NCS7 HOTEL</a></h1>
 <form id=frmRoom action="/hotel/addRoom">
-객실코드 : <input type=text id=room_code name=room_code placeholder='객실코드' readonly><br>
-객실명 : <input type=text id=name name=name placeholder='객실명을 입력해주세요'><br>
-객실타입 : <select id=selType name=seltype></select><br>
-숙박인원 : <input type=text id=howmany name=howmany placeholder='숙박인원을 입력해주세요'><br>
-숙박료 : <input type=text id=howmuch name=howmuch placeholder='숙박료를 입력해주세요'><br>
-<input type=submit value='추가'>
-<input type=button value="삭제" id=btnDelete>
-<input type=reset value="비우기">
+<div style="width:470px; position:relative; margin:auto; margin-top:40px;">
+      <h1 style="text-align:center; font-weight:bold; font-size:40px; letter-spacing:6px;">객실관리</h1>
+      <h2 style="text-align:center; font-weight:bold; color:#ccc; margin-bottom:30px; font-size:22px; letter-spacing:4px;">Room Control</h2>
+   <div class="input-group mb-3">
+     <span class="input-group-text" id="inputGroup-sizing-default" style="width:109px;">Roomcode</span>
+     <input type="text" class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default"
+           id=room_code name=room_code readonly placeholder='객실코드를 입력해주세요'>
+   </div>
+   <div class="input-group mb-3">
+     <span class="input-group-text" id="inputGroup-sizing-default">Roomname</span>
+     <input type="text" class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default"
+           id=name name=name placeholder='객실명을 입력해주세요'>
+   </div>
+      <select class="form-select" aria-label="Default select example" id=selType name=seltype size=1 style="margin-bottom:15px; padding:5px 5px 5px 12px;">
+   
+      </select>
+      
+   <div class="input-group mb-3">
+     <span class="input-group-text" id="inputGroup-sizing-default" style="width:109px;">Howmany</span>
+     <input type="text" class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default"
+           id=howmany name=howmany placeholder='숙박인원을 입력해주세요'>
+   </div>
+   <div class="input-group mb-3">
+     <span class="input-group-text" id="inputGroup-sizing-default" style="width:109px;">Howmuch</span>
+     <input type="text" class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default"
+           id=howmuch name=howmuch placeholder='숙박료를 입력해주세요'>
+   </div>
+      <div style="float:right; margin-bottom:15px;">
+               <input type="submit" class="btn btn-secondary" value="Add">
+               <button type="button" class="btn btn-secondary" id=btnDelete >Delete</button>
+               <button type="reset" class="btn btn-secondary" >Reset</button>
+      </div>
+      
+      <select class="form-select" multiple aria-label="multiple select example" id=selRoom  size=10
+            style="margin-bottom:15px; padding:5px 5px 5px 5px;">
+      </select>
+</div>
 </form>
-<select id=selRoom  size=10> 
-
-</select>
-
 </body>
 <script src='https://code.jquery.com/jquery-3.5.0.js'></script>
 <script>
@@ -91,3 +118,4 @@ $(document)
 
 </script>
 </html>
+<jsp:include page="footer.jsp" />

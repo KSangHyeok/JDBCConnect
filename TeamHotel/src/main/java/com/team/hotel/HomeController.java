@@ -414,6 +414,80 @@ public class HomeController {
 		System.out.println("리턴값:"+retext);
 		return retext;
 	}
-	//--------------------------------------------------------
+	//지명은씨--------------------------------------------------------
+	@RequestMapping("/flist")
+	public String FAQList() {
+		System.out.println("flist");
+		return "FAQList";
+	}
+	@ResponseBody
+	@RequestMapping(value="ftitle",produces="application/json;charset=UTF-8")
+	public String  getFAQList(HttpServletRequest hsr) {
+		
+		iHotel FList=sqlSession.getMapper(iHotel.class);
+		ArrayList<Board> faq=FList.getBoardList();
+//		System.out.println("Size:" +faq.size());
+		
+		JSONArray ja= new JSONArray();
+		for(int i=0; i<faq.size();i++) { //ArrayList ->JSON
+			JSONObject jo=new JSONObject();
+			jo.put("post_code",faq.get(i).getPost_code());//
+			jo.put("title",faq.get(i).getTitle());//
+			jo.put("created",faq.get(i).getCreated());
+		
+			ja.add(jo);
+		}
+		return ja.toString();
+	}
 	
+	@RequestMapping("/fcontent")
+	public String FAQContent(HttpServletRequest hsr, Model model) {		
+		int post_code=Integer.parseInt(hsr.getParameter("post_code"));
+		HttpSession session= hsr.getSession(true);
+		iHotel fcontent=sqlSession.getMapper(iHotel.class);
+//		ArrayList<Board> fc=fcontent.getBoardList();
+		Board post=fcontent.getPost(post_code);
+		model.addAttribute("post",post);
+		System.out.println(session.getAttribute("user_type"));
+		
+//		session.setAttribute("u_type", member.getUser_type());
+	//	model.addAttribute("user_type",session.getAttribute("user_type"));
+		return "FAQContent";
+	}
+	@RequestMapping("/deletefaq")
+//	@RequestMapping("/deletefaq/{post_code}")
+//	public String DeleteFAQ(@PathVariable(value="post_code") int post_code) {
+	public String DeleteFAQ(HttpServletRequest hsr) {
+		int post_code=Integer.parseInt(hsr.getParameter("post_code"));
+		iHotel faq=sqlSession.getMapper(iHotel.class);
+		Board post=faq.getPost(post_code);
+		faq.deleteBoard(post_code);
+		return "redirect:/flist";
+	}
+	@RequestMapping("/fwrite")
+	public String FAQWrite() {
+		return "FAQWrite";
+	}
+	@RequestMapping("/admin_fwrite")
+	public String Write(HttpServletRequest hsr,Model model) {
+		int post_code=Integer.parseInt(hsr.getParameter("post_code"));
+		iHotel faq=sqlSession.getMapper(iHotel.class);
+		Board board=faq.getPost(post_code);
+		model.addAttribute("board",board);
+		return "FAQWrite";
+	}
+	@RequestMapping(value="/FAQWrite",method=RequestMethod.POST)
+	public String FAQ(HttpServletRequest hsr) {
+		String strcode=hsr.getParameter("post_code");
+		String title=hsr.getParameter("title");
+		String content=hsr.getParameter("content");
+		iHotel FAQW=sqlSession.getMapper(iHotel.class);
+		if(strcode.equals("") || strcode.equals(null)) {
+			FAQW.addBoard(title, content);
+		} else {
+			int post_code=Integer.parseInt(strcode);
+			FAQW.updateBoard(post_code, title, content);
+		}
+		return "redirect:/flist";
+	}	
 }

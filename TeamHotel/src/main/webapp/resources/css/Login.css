@@ -1,0 +1,41 @@
+@charset "UTF-8";
+h2{
+	font-size:25pt;
+}
+#div_outLine{
+	height:60vh;
+    width:100%;
+	margin:90px auto 50px;
+	text-align:center;
+}
+#div_in{
+	display:inline-block;
+	border:1px solid #e1e1e1;
+	height:40vh;
+	width:700px;
+	text-align:center;
+}
+#div_info{
+	margin:5% auto 0;
+}
+#div_sign{
+	margin:5% 20px auto 0;
+}
+input{
+	box-sizing:border-box;
+	width:85%;
+	height:54px;
+	padding:15px;
+	border:1px solid #e1e1e1;
+	outline:0;
+	font-size:15px;
+}
+#btnSubmit{
+	margin-left:10px;
+	width:85%;
+	height:54px;
+	border: 1px solid #051e3e;
+	background-color:#051e3e;
+	font-weight: bold;
+	color:#ffffff;
+}

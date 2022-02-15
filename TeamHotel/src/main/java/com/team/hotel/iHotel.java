@@ -27,4 +27,11 @@ public interface iHotel {
 		void loginMember(String userid);
 		void logoutMember(String userid);
 //		회원가입/회원탈퇴/로그인/로그아웃
+	//지명은씨
+		ArrayList<Board> getBoardList();
+		Board getPost(int post_code);
+		
+		void addBoard(String title, String content); //insert
+		void updateBoard(int post_code, String title, String content);//update
+		void deleteBoard(int post_code); //delete
 }

@@ -7,22 +7,39 @@
 <meta charset="UTF-8">
 <title>typeControl</title>
 </head>
+<c:set var="path" value="${pageContext.request.contextPath}"/>
+ <link href="${path}/resources/css/Homeinfo.css" rel="stylesheet" >
+<jsp:include page="header.jsp" />
 <body>
-<h1><a href="/hotel/">NCS7 HOTEL</a></h1>
-<form id=frmRoom action="/hotel/addType">
-객실타입코드 : <input type=text id=type_code name=type_code readonly><br>
-객실타입명 : <input type=text id=name name=name><br><br>
-<input type=submit value='추가'>
-<input type=button value='수정' id=btnUpdate>
-<input type=button value="삭제" id=btnDelete>
-<input type=reset value="비우기">
+<form id=frmRoom action="/hotel/addType" style="height:524px;">
+<div style="width:470px; position:relative; margin:auto; margin-top:100px;">
+   <h1 style="text-align:center; font-weight:bold; font-size:40px; letter-spacing:6px;">객실타입관리</h1>
+   <h2 style="text-align:center; font-weight:bold; color:#ccc; margin-bottom:30px; font-size:22px; letter-spacing:4px;">Roomtype Control</h2>
+      <div class="input-group mb-3">
+        <span class="input-group-text" id="inputGroup-sizing-default">객실타입코드</span>
+        <input type="text" class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default"
+        id=type_code name=type_code readonly>
+      </div>
+      <div class="input-group mb-3">
+        <span class="input-group-text" id="inputGroup-sizing-default" style="width:122px;">객실타입명</span>
+        <input type="text" class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default"
+        id=name name=name>
+      </div>
+         <div style="float:right;">
+            <input type="submit" class="btn btn-secondary" value="Add">
+            <button type="button" class="btn btn-secondary" id=btnUpdate>Update</button>
+            <button type="button" class="btn btn-secondary" id=btnDelete>Delete</button>
+            <button type="reset" class="btn btn-secondary">Reset</button>
+         </div>
+         <div>
+            <select class="form-select" multiple aria-label="multiple select example" id=selType name=selType size=5
+            style="margin-top:70px; padding:5px 5px 5px 5px;">
+            </select>
+         </div>
+</div>
 </form>
-<br>
-<select id=selType name=selType size=10>
-
-</select>
-
 </body>
+
 <script src='https://code.jquery.com/jquery-3.5.0.js'></script>
 <script>
 $(document)
@@ -61,3 +78,4 @@ $(document)
 })
 </script>
 </html>
+<jsp:include page="footer.jsp" />

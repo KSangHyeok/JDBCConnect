@@ -12,8 +12,10 @@
     from room
     where howmany >= #{param4} and type=#{param1} and not room_code in(select a.room_code from book a,room b
     where a.room_code=b.room_code and 
-    (a.start_dt >= #{param2} and a.end_dt < #{param3} or a.end_dt > #{param2} and a.end_dt <= #{param3}))]]>
+    (a.start_dt <= #{param2} and a.end_dt >= #{param3} or a.start_dt >= #{param2} and a.end_dt <= #{param3}
+    or a.start_dt <= #{param2} and a.end_dt >= #{param2} or a.start_dt <= #{param3} and a.end_dt >= #{param3})) ]]>
 	</select>
+	
 	<select id="getroomname" resultType="com.team.hotel.Roomlist">
 	select room_code,name from room where type=#{param1}
 	</select>
@@ -76,4 +78,24 @@
 	delete from member where userid=#{param1}
 </delete>
 <!--                 회원가입/로그인/회원탈퇴/로그아웃                   -->
+<!-- 지명은씨 -->
+<select id="getBoardList" resultType="com.team.hotel.Board">
+    	select post_code, title, content, created
+    	from board
+    	order by post_code
+    </select>
+        <select id="getPost" resultType="com.team.hotel.Board">
+    	select post_code, title, content, created
+    	from board
+    	where post_code=#{param1}
+    </select>
+    <insert id="addBoard">
+    	insert into board values(seq_post_code.nextval,#{param1},#{param2},to_char(sysdate,'YYYY/MM/DD'))
+    </insert>
+    <update id="updateBoard">
+    	update board set title=#{param2}, content=#{param3} where post_code=#{param1}
+    </update>
+    <delete id="deleteBoard">
+    	delete from Board where post_code=#{param1}
+    </delete>
 </mapper>
