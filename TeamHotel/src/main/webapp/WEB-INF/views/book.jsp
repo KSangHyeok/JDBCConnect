@@ -116,14 +116,15 @@ $(document)
 });
 })
 .on('click','#btnGo',function(){
-	
+	$('#div3').empty();
 	
 	if($('#start_dt').val()=='' || $('#end_dt').val()==''){
 		alert('예약기간을 설정하세요');
 		return false;
 	}
-	if($('howmany').val()){
+	if($('#howmany').val()==''){
 		alert('인원수를 정하세요');
+		return false;
 	}	
 	$.ajax({url:"/hotel/roombook",
 		data:{type_code:$('#seltype').val(),
@@ -140,7 +141,7 @@ $(document)
 			console.log(txt);	
 			if(txt.length !=0){
 				for(let i=0;i<txt.length;i++){	
-				let div3= "<tr><th scope='row'>"+txt[i]['type_name']+"</th><td>"+txt[i]['name']+"</td><td>"+txt[i]['howmuch']+"</td><td>"+"<input type=button id="+txt[i]['room_code']+" name=btno value='객실예약'>"+"</td></tr>"
+				let div3= "<tr><th scope='row'>"+txt[i]['type_name']+"</th><td>"+txt[i]['name']+"</td><td>"+txt[i]['howmuch']+"원"+"</td><td>"+"<input type=button id="+txt[i]['room_code']+" name=btno value='객실예약'>"+"</td></tr>"
 				$('#div3').append(div3);
 				}
 			}
@@ -186,8 +187,7 @@ $(document)
 		alert('예약자명 or 모바일을 적어주세요.');
 		
 		return false;
-	}else{
-		alert($('#dlg_start').val()+$('#dlg_end').val());
+	}else{		
 		$.ajax({url:"/hotel/ok",
 			data:{room_code:$('#room_code').val(),
 				mobile:$('#mobile').val(),
@@ -201,6 +201,7 @@ $(document)
 			dataType:"text",
 			
 			success:function(txt){	
+				alert("예약이 완료되었습니다.");
 				document.location="/hotel/";
 				}
 						

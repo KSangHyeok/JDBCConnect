@@ -14,7 +14,7 @@
 <style>
 table {border-collapse:collapse;border:1px solid black;height:300px; weight:300px;}
 
-.div_body{height:545px;}
+.div_body{height:545px; margin:auto;}
 .div_body1{ width:442px; margin-left:10px;}
 .div_body2{width:442px; margin-left:465px; margin-top:-477px; }
 .div_body3{margin-left:930px; margin-top:-476px; width:350px;}
@@ -22,10 +22,10 @@ table {border-collapse:collapse;border:1px solid black;height:300px; weight:300p
 <jsp:include page="header.jsp" />
 <body>
 
-<div class="div_body">
+<div class="div_body" style="min-width:1200px;">
 <h1 style="text-align:center; font-weight:bold; font-size:40px; letter-spacing:6px;">예약관리</h1>
    <h2 style="text-align:center; font-weight:bold; color:#ccc; margin-bottom:30px; font-size:22px; letter-spacing:4px;">Manage Control</h2>
-   <div class="div_body1"  >
+   <div class="div_body1"  style="margin-left:300px;">
       <div class="input-group mb-3" style="font-size:25px;">
         <span class="input-group-text" id="inputGroup-sizing-default" style="width:109px;">예약기간</span>
         <input type="date" class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default"
@@ -110,7 +110,7 @@ table {border-collapse:collapse;border:1px solid black;height:300px; weight:300p
            <div class="input-group mb-3" style="font-size:25px;">
            <span class="input-group-text" id="inputGroup-sizing-default" style="width:109px;">숙박비</span>
            <input type="text" class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default"
-                 id=howmuch name=howmuch readonly >
+                 id=howmuch name=howmuch >
            </div>
            <div >
             <button type="button" class="btn btn-secondary" id=btnOk style="margin-bottom:15px;">예약확정</button>
@@ -146,7 +146,7 @@ $(document)
          
    for(i=0; i<txt.length; i++){
       let str='<option value='+txt[i]['code']+'>'+txt[i]['name']+'</option>';
-      
+      console.log(txt);
       $('#type_code,#type_codee').append(str);
       }
    }   
@@ -171,7 +171,7 @@ $(document)
          
    for(i=0; i<txt.length; i++){
       let str='<option value='+txt[i]['type']+'>'+txt[i]['name']+' '+txt[i]['room_code']+' '+txt[i]['howmany']+' '+txt[i]['howmuch']+'</option>';
-      
+      console.log(txt);
       $('#selRoom').append(str);
       }
    }   
@@ -196,7 +196,7 @@ $(document)
 .on('click','#selRoom option',function(){
    clean();
    $('#type_codee').val($(this).val());
-   
+   console.log($('#type_codee').val());
    $('#start_dtt').val($('#start_dt').val());
    $('#end_dtt').val($('#end_dt').val());
    $('#howmanyy').val($('#howmany').val());

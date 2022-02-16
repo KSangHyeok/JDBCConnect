@@ -1,0 +1,36 @@
+@charset "utf-8";
+@import url('https://fonts.googleapis.com/css2?family=Gowun+Batang&family=Noto+Sans+KR:wght@500&display=swap');
+*{margin:0; padding:0;  }
+img{width:80%;}
+body{margin:0;}
+a{text-decoration:none !important; color:#ccc;}
+li{ list-style:none;}
+div{display:block;}
+
+.selectfont{font-family: 'Nanum Gothic Coding', monospace;}
+h5,p{text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black;}
+.page-title{text-align:center; padding:0px 15px;}
+/* 객실 정보 */
+.carousel{width:1000px; margin:0 auto;}
+.carousel-inner{ width:1000px; height:500px;}
+.carousel-caption{top: 22rem; bottom: auto;}
+.roomTab {margin-top:0px; padding:0 15px; overflow-x:auto; text-align:center; position:absolute;
+		 left:50%; width:740px; margin:0px 0px 0px -386px;}
+.roomTab ul{text-align:center; display:block; list-style-type:disc; margin-block-start: 1em;
+			margin-block-end:1em; margin-inline-start:0px; margin-inline-end: 0px; padding-inline-start:40px;}
+.roomTab li{display:inline-block; box-sizing:border-box; border:1px solid #ccc; border-left:none; min-width:150px;}
+.roomTab li a{display:block; color:#000; padding:6px 10px;}
+.roomTab li:hover{border:1px solid #ea5d27;}
+.roomTab li:hover a{color:#ea5d27;}
+.roomTab li.on {background:#051e3e;}
+.roomTab li.on:hover{border:1px solid #ccc;}
+.roomTab li.on a{color:#fff;}
+.roomTab li:first-child{border-left:1px solid #ccc;}
+.btnBook{background-color:#051e3e; color:white; width:300px; border:none; padding: 10px 0px 10px 0px; margin-top:20px; margin-bottom:35px;}
+
+/*객실정보 하단 내용*/
+.pack{position:relative; padding: 50px 50px 50px 110px; border-top:solid 1px #d6d6d6; line-height: 2; font-size:13px; color:#828282; width:1200px;}
+.title{postion:absolute; top:55px; left:21px; line-height:1; font-size:23px; font-weight:500; color:#3a3a3a;}
+.dl-group{margin-top:0; padding:0px 0px 0px 117px;}
+.area-body{ padding-bottom:100px; }
+.wrap{padding-top:0 !important; padding-bottom:0 !important;}

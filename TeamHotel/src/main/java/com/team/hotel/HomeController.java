@@ -233,108 +233,196 @@ public class HomeController {
 		return "/confirm";
 	}
 	//승혁이형	
-	@RequestMapping(value = "/controltype")      //show typecontrol
-	   public String typecontrol() {
-	      return "typecontrol";
-	   }
-	@RequestMapping("/addType")      //insert typecontrol
-	   public String addType(HttpServletRequest hsr) {
-	      String type_name = hsr.getParameter("name");
-	      iHotel addtype=sqlSession.getMapper(iHotel.class); 
-	      addtype.addType(type_name);
-	      return "typecontrol";
-	   }
-	@RequestMapping("/updType")      //update typecontrol
-	   public String updType(HttpServletRequest hsr) {
-	      String type_name = hsr.getParameter("name");
-	      int type_code = Integer.parseInt(hsr.getParameter("type_code"));
-	      iHotel updtype=sqlSession.getMapper(iHotel.class);
-	      updtype.updType(type_code, type_name);
-	      return "redirect:/typecontrol";
-	   }
-	@ResponseBody         // typecontrol ajaxcall
-	   @RequestMapping(value="/typeadd1",produces="application/json;charset=utf-8")
-	   public String typeadd1() {
-	      iHotel selType = sqlSession.getMapper(iHotel.class);
-	      ArrayList<roomtypeDTO> seltype=selType.selType();
-	      JSONArray ja= new JSONArray();
-	      for(int i=0; i<seltype.size(); i++) {
-	         JSONObject jo=new JSONObject();
-	         jo.put("type_code",seltype.get(i).getType_code());
-	         jo.put("type_name",seltype.get(i).getType_name());
-	         ja.add(jo);
-	      }
-	      return ja.toString();
-	   }
-	@RequestMapping("/delType")      //delete typecontrol
-	   public String doDelType(HttpServletRequest hsr) {
-	      int code=Integer.parseInt(hsr.getParameter("type_code"));
-	      iHotel delType=sqlSession.getMapper(iHotel.class);
-	      delType.delType(code);
-	      return "redirect:/controltype";
-	   }
-  @RequestMapping("/typecontrol")      //select typecontrol
-  public String selType(Model m) {
-     iHotel selType = sqlSession.getMapper(iHotel.class);
-     ArrayList<roomtypeDTO> seltype=selType.selType();
-     m.addAttribute("seltype",seltype);
-     return "typecontrol";
-  }
-  //roomcontrol
-  @RequestMapping("/controlroom")      //show roomcontrol
-  public String roomcontrol() {
-     return "redirect:/roomcontrol";
-  }
-  @RequestMapping("/roomcontrol")      //select roomcontrol
-  public String selRoom(Model m) {
-     iHotel selRoom = sqlSession.getMapper(iHotel.class);
-     ArrayList<roomDTO> selroom=selRoom.selRoom();
-     m.addAttribute("selroom",selroom);
-     return "roomcontrol";
-  }
-  @RequestMapping("/delRoom")      //delete roomcontrol
-  public String doDeleteRoom(HttpServletRequest hsr) {
-     int code=Integer.parseInt(hsr.getParameter("room_code"));
-     iHotel delRoom=sqlSession.getMapper(iHotel.class);
-     delRoom.delRoom(code);
-     return "redirect:/roomcontrol";
-  }
-  @RequestMapping("/addRoom")      //insert roomcontrol
-  public String addRoom(HttpServletRequest hsr) {
-     String strCode = hsr.getParameter("room_code");
-     String name = hsr.getParameter("name");
-     int howmany = Integer.parseInt(hsr.getParameter("howmany"));
-     int howmuch = Integer.parseInt(hsr.getParameter("howmuch"));
-     
-     if(strCode.equals("")) {
-     iHotel addroom=sqlSession.getMapper(iHotel.class);
-     int type = Integer.parseInt(hsr.getParameter("seltype"));
-     addroom.addRoom(name,type,howmany,howmuch);
-     } else {               //update roomcontrol
-        int code=Integer.parseInt(strCode);
-        int type = Integer.parseInt(hsr.getParameter("seltype"));
-        iHotel updroom=sqlSession.getMapper(iHotel.class);
-        updroom.updRoom(code, name,type, howmany, howmuch);
-     }
-     return "roomcontrol";
-  }
-  @ResponseBody            // roomcontrol ajaxcall
-  @RequestMapping(value="/roomadd1",produces="application/json;charset=utf-8")
-  public String roomadd1() {
-     iHotel selRoom = sqlSession.getMapper(iHotel.class);
-     ArrayList<roomDTO> selroom=selRoom.selRoom();
-     JSONArray ja= new JSONArray();
-     for(int i=0; i<selroom.size(); i++) {
-        JSONObject jo=new JSONObject();
-        jo.put("room_code",selroom.get(i).getRoom_code());
-        jo.put("name",selroom.get(i).getName());
-        jo.put("type",selroom.get(i).getType_name());
-        jo.put("howmany",selroom.get(i).getHowmany());
-        jo.put("howmuch",selroom.get(i).getHowmuch());
-        ja.add(jo);
-     }
-     return ja.toString();
-  }
+	//typecontrol CRUD	
+		@RequestMapping(value = "/controltype")		//show typecontrol
+		public String typecontrol() {
+			return "typecontrol";
+		}
+		@RequestMapping(value = "/NewFile")		//show typecontrol
+		public String NewFile() {
+			return "NewFile";
+		}
+		@RequestMapping("/addType")		//insert typecontrol
+		public String addType(HttpServletRequest hsr) {
+			String type_name = hsr.getParameter("name");
+			iHotel addtype=sqlSession.getMapper(iHotel.class); 
+			addtype.addType(type_name);
+			return "redirect:/typecontrol";
+		}
+			
+		@RequestMapping("/updType")		//update typecontrol
+		public String updType(HttpServletRequest hsr) {
+			String type_name = hsr.getParameter("name");
+			int type_code = Integer.parseInt(hsr.getParameter("type_code"));
+			iHotel updtype=sqlSession.getMapper(iHotel.class);
+			updtype.updType(type_code, type_name);
+			return "redirect:/typecontrol";
+		}
+		
+		@ResponseBody			// typecontrol ajaxcall
+		@RequestMapping(value="/typeadd1",produces="application/json;charset=utf-8")
+		public String typeadd1() {
+			iHotel selType = sqlSession.getMapper(iHotel.class);
+			ArrayList<roomtypeDTO> seltype=selType.selType();
+			JSONArray ja= new JSONArray();
+			for(int i=0; i<seltype.size(); i++) {
+				JSONObject jo=new JSONObject();
+				jo.put("type_code",seltype.get(i).getType_code());
+				jo.put("type_name",seltype.get(i).getType_name());
+				ja.add(jo);
+			}
+			return ja.toString();
+		}
+			
+		@RequestMapping("/delType")		//delete typecontrol
+		public String doDelType(HttpServletRequest hsr) {
+			int code=Integer.parseInt(hsr.getParameter("type_code"));
+			iHotel delType=sqlSession.getMapper(iHotel.class);
+			delType.delType(code);
+			return "redirect:/controltype";
+		}
+		
+		@RequestMapping("/typecontrol")		//select typecontrol
+		public String selType(Model m) {
+			iHotel selType = sqlSession.getMapper(iHotel.class);
+			ArrayList<roomtypeDTO> seltype=selType.selType();
+			m.addAttribute("seltype",seltype);
+			return "typecontrol";
+		}
+			
+		//roomcontrol CRUD
+		
+		@RequestMapping("/controlroom")		//show roomcontrol
+		public String roomcontrol() {
+			return "redirect:/roomcontrol";
+		}
+		
+		@RequestMapping("/roomcontrol")		//select roomcontrol
+		public String selRoom(Model m) {
+			iHotel selRoom = sqlSession.getMapper(iHotel.class);
+			ArrayList<roomDTO> selroom=selRoom.selRoom();
+			m.addAttribute("selroom",selroom);
+			return "roomcontrol";
+		}
+		
+		@RequestMapping("/delRoom")		//delete roomcontrol
+		public String doDeleteRoom(HttpServletRequest hsr) {
+			int code=Integer.parseInt(hsr.getParameter("room_code"));
+			iHotel delRoom=sqlSession.getMapper(iHotel.class);
+			delRoom.delRoom(code);
+			return "redirect:/roomcontrol";
+		}
+		
+		@RequestMapping("/addRoom")		//insert roomcontrol
+		public String addRoom(HttpServletRequest hsr) {
+			String strCode = hsr.getParameter("room_code");
+			String name = hsr.getParameter("name");
+			int howmany = Integer.parseInt(hsr.getParameter("howmany"));
+			int howmuch = Integer.parseInt(hsr.getParameter("howmuch"));
+			
+			if(strCode.equals("")) {
+			iHotel addroom=sqlSession.getMapper(iHotel.class);
+			int type = Integer.parseInt(hsr.getParameter("seltype"));
+			addroom.addRoom(name,type,howmany,howmuch);
+			} else {					//update roomcontrol
+				int code=Integer.parseInt(strCode);
+				int type = Integer.parseInt(hsr.getParameter("seltype"));
+				iHotel updroom=sqlSession.getMapper(iHotel.class);
+				updroom.updRoom(code, name,type, howmany, howmuch);
+			}
+			return "redirect:/roomcontrol";
+		}
+		
+		@ResponseBody				// roomcontrol ajaxcall
+		@RequestMapping(value="/roomadd1",produces="application/json;charset=utf-8")
+		public String roomadd1() {
+			iHotel selRoom = sqlSession.getMapper(iHotel.class);
+			ArrayList<roomDTO> selroom=selRoom.selRoom();
+			JSONArray ja= new JSONArray();
+			for(int i=0; i<selroom.size(); i++) {
+				JSONObject jo=new JSONObject();
+				jo.put("room_code",selroom.get(i).getRoom_code());
+				jo.put("name",selroom.get(i).getName());
+				jo.put("type",selroom.get(i).getType_name());
+				jo.put("howmany",selroom.get(i).getHowmany());
+				jo.put("howmuch",selroom.get(i).getHowmuch());
+				ja.add(jo);
+			}
+			return ja.toString();
+		}
+		// roominfo start
+		
+		@RequestMapping("/roominfo")
+		public String showroominfo() {
+			return "roominfo";
+		}
+		
+		@RequestMapping("/header")
+		public String showheader() {
+			return "header";
+		}
+		
+		
+		
+		
+		
+		@RequestMapping("/superior")		//show superior  type들
+		public String Showsuperior() {
+			return "superior";
+		}
+		@RequestMapping("/superior/SDB")
+		public String ShowSDB() {
+			return "SDB";
+		}
+		@RequestMapping("/superior/STW")
+		public String ShowSTW() {
+			return "STW";
+		}
+		@RequestMapping("/superior/SFD")
+		public String ShowSFD() {
+			return "SFD";
+		}
+		@RequestMapping("/superior/SFT")
+		public String ShowSFT() {
+			return "SFT";
+		}
+			
+		@RequestMapping("/gorgeous")
+		public String Showgorgeous() {
+			return "gorgeous";
+		}
+		
+		@RequestMapping("/gorgeous/GKD")
+		public String ShowGKD() {
+			return "GKD";
+		}
+		@RequestMapping("/gorgeous/GOT")
+		public String ShowGOT() {
+			return "GOT";
+		}
+		@RequestMapping("/gorgeous/GOD")
+		public String ShowGOD() {
+			return "GOD";
+		}
+		
+		@RequestMapping("/suite")
+		public String Showsuite() {
+			return "suite";
+		}
+		
+		@RequestMapping("/suite/ROS")
+		public String ShowROS() {
+			return "ROS";
+		}
+		@RequestMapping("/suite/JUS")
+		public String ShowJUS() {
+			return "JUS";
+		}
+		@RequestMapping("/suite/GBS")
+		public String ShowGBS() {
+			return "GBS";
+		}
+		
   //김유진씨
   
 //	-------------------------------------------------------------------------------
@@ -472,17 +560,27 @@ public class HomeController {
 	}
 	//지명은씨--------------------------------------------------------
 	@RequestMapping("/flist")
-	public String FAQList() {
+	public String FAQList(Model model,Criteria cri) {
 		System.out.println("flist");
+		iHotel hotel=sqlSession.getMapper(iHotel.class);
+		int total=hotel.getTotal();
+		System.out.println("total :["+total+"]");
+		pageDTO page=new pageDTO(total,cri);
+		model.addAttribute("paging",page);
 		return "FAQList";
 	}
 	@ResponseBody
 	@RequestMapping(value="ftitle",produces="application/json;charset=UTF-8")
 	public String  getFAQList(HttpServletRequest hsr) {
-		
+		int pageNum=Integer.parseInt(hsr.getParameter("pageNum"));
+		int amount=Integer.parseInt(hsr.getParameter("amount"));
+		System.out.println("pageNum ["+pageNum+"]");
+		System.out.println(amount);
+		int start=pageNum*amount;
+		int end=(pageNum-1)*amount;
 		iHotel FList=sqlSession.getMapper(iHotel.class);
-		ArrayList<Board> faq=FList.getBoardList();
-//		System.out.println("Size:" +faq.size());
+		ArrayList<Board> faq=FList.getBoardList(start,end);
+		System.out.println("Size:" +faq.size());
 		
 		JSONArray ja= new JSONArray();
 		for(int i=0; i<faq.size();i++) { //ArrayList ->JSON
@@ -496,6 +594,19 @@ public class HomeController {
 		return ja.toString();
 	}
 	
+//	@RequestMapping("/paging")
+//	public String getLines(HttpServletRequest hsr, Model model){
+//	    int lines=30;
+//	    int pageno=Integer.parseInt(hsr.getParameter("pageno"));
+//	    int start=lines*pageno+1;
+//	    int end=lines*(pageno+1);
+//	    iHotel iHotel=sqlSession.getMapper(iHotel.class);
+//	    ArrayList<Paging> pageList = iHotel.getLines(start,end);
+//	    model.addAttribute("pl",pageList);
+//	    return "FAQList";
+//	}
+
+
 	@RequestMapping("/fcontent")
 	public String FAQContent(HttpServletRequest hsr, Model model) {		
 		int post_code=Integer.parseInt(hsr.getParameter("post_code"));
@@ -510,6 +621,7 @@ public class HomeController {
 	//	model.addAttribute("user_type",session.getAttribute("user_type"));
 		return "FAQContent";
 	}
+	
 	@RequestMapping("/deletefaq")
 //	@RequestMapping("/deletefaq/{post_code}")
 //	public String DeleteFAQ(@PathVariable(value="post_code") int post_code) {
@@ -520,12 +632,14 @@ public class HomeController {
 		faq.deleteBoard(post_code);
 		return "redirect:/flist";
 	}
+
 	@RequestMapping("/fwrite")
 	public String FAQWrite() {
 		return "FAQWrite";
 	}
 	@RequestMapping("/admin_fwrite")
 	public String Write(HttpServletRequest hsr,Model model) {
+		// 여기가 수정버튼 눌러서 오는 매핑!
 		int post_code=Integer.parseInt(hsr.getParameter("post_code"));
 		iHotel faq=sqlSession.getMapper(iHotel.class);
 		Board board=faq.getPost(post_code);
@@ -539,8 +653,10 @@ public class HomeController {
 		String content=hsr.getParameter("content");
 		iHotel FAQW=sqlSession.getMapper(iHotel.class);
 		if(strcode.equals("") || strcode.equals(null)) {
+			// 여기는 인서트되고
 			FAQW.addBoard(title, content);
 		} else {
+			// 여기는 업데이트되게 만들어요. 여기 업데이트만 추가하면끝!
 			int post_code=Integer.parseInt(strcode);
 			FAQW.updateBoard(post_code, title, content);
 		}

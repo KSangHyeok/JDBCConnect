@@ -6,114 +6,79 @@
 <html>
 <head>
 <meta charset="UTF-8">
+<link rel="stylesheet" href="//code.jquery.com/ui/1.13.0/themes/base/jquery-ui.css">
+<link rel="stylesheet" href="resources/css/A1.css">
+<link rel="stylesheet" href="resources/css/header.css">
+<link rel="stylesheet" href="resources/css/FAQList.css">
 <title>FAQ List</title>
 </head>
 <style>
-		table{border-collapse:collapse;}
-		td,th{border:1px solid black;}
-		li{list-style : none;}
-	 	a{color:#333;}
-	 	body{color:#333;}
-	 	*{padding:0;margin:0;}
-</style>
-<header>
-	<c:if test="${u_type==null }">	
-		<div>
-			<nav>
-				<ul>
-					<li><a href="/hotel/login">로그인</a></li>
-		            <li><a href="/hotel/register">회원가입</a></li>
-		            <li><a href="/hotel/reservation">예약하기</a></li>
-		            <li><a href="/hotel/roominfo">객실정보</a></li>
-		            <li><a href="/hotel/flist">FAQ</a></li>
-		    	</ul>
-		    </nav>
-		</div>
-	 </c:if>
-	 <c:if test="${u_type==1 }">
-	 	<div>
-			<nav>
-				<ul>
-					<li><a href="/hotel/logout">로그아웃</a></li>
-		            <li><a href="/hotel/account_delete">회원탈퇴</a></li>
-		 	 		<li><a href="/hotel/guestcontrol">예약자관리</a></li>
-		            <li><a href="/hotel/typecontrol">객실타입관리</a></li>
-		            <li><a href="/hotel/roomcontrol">객실관리</a></li>
-		            <li><a href="/hotel/flist">FAQ</a></li>
-				</ul>
-			</nav>
-		</div>
-	 </c:if>              
-	 <c:if test="${u_type==2 }">
-	 	<div>
-			<nav>
-				<ul>
-					<li><a href="/hotel/logout">로그아웃</a></li>
-		            <li><a href="/hotel/account_delete">회원탈퇴</a></li>
-		 	 		<li><a href="/hotel/reservation">예약하기</a></li>
-		            <li><a href="/hotel/roominfo">객실정보</a></li>
-		            <li><a href="/hotel/flist">FAQ</a></li>
-				</ul>
-			</nav>
-		</div>
-	 </c:if>
-</header>	
-<body>
-- <a href="/hotel/">홈</a> / FAQ
-<br><br><br>
-<h1>FAQ</h1>
-<c:if test="${u_type==1}"><!-- 1=직원 -->
-	<input type=button value="글쓰기" id="btn_FAQ"> <!-- 맞게 고치면 될거에여. 지금은 확인용도라서 -->
-</c:if>
-	<hr>
-	<table id="tbl_FAQList">
-		<thead>
-			<tr>
-				<th>No.</th>
-				<th>제목</th>
-				<th>등록일</th>
-			</tr>
-		</thead>
-		<tbody>
-		</tbody>
-		
-	</table>
-	<div>
-		<ul>
-			<li>
-				<a href="/hotel/p">이전</a>
-			</li>
-			<li>
-				<a href="/hotel/n">다음</a>
-			</li>
-		</ul>
-		</div>
 	
-</body>
+</style>
 
+<body>
+
+<jsp:include page="header.jsp" />
+	<h1>FAQ</h1>
+	<input type="hidden" name="pageNum" value="${paging.cri.pageNum }">
+	<input type="hidden" name="amount" value="${paging.cri.amount }">
+	<c:if test="${u_type==1}"><!-- 1=직원 -->
+		<div id="writefaq">
+		<input type=button value="글쓰기" id="btn_FAQ"> 
+		</div>
+	</c:if>
+	<div id="div_table">
+		<table id="tbl_FAQList">
+			<thead>
+				<tr>
+					<th class="td_first">No.</th>
+					<th class="th_second">제목</th>
+					<th class="td_third">등록일</th>
+				</tr>
+			</thead>
+			<tbody>
+			</tbody>
+		</table>
+	</div>
+	<div class="pageInfo_wrap">
+		<div class="pageInfo_area">
+			<ul id="pageInfo" class="pageInfo">
+				<c:if test="${paging.prev }">
+					<li class="pageInfo_btn_previous"><a href="${paging.startPage-1}">이전</a></li>
+				</c:if>
+				<c:forEach var="num" begin="${paging.startPage }" end="${paging.endPage }">
+					<li class="pageInfo_btn"><a id="page" href="${num }">${num }</a></li>
+				</c:forEach>
+				<c:if test="${paging.next }">
+					<li class="pageInfo_btn_next"><a href="${paging.endPage+1}">다음</a></li>
+				</c:if>
+			</ul>
+		</div>
+	</div>
+<jsp:include page="footer.jsp" />
+</body>
+<input type=hidden id=hd name=hd value="">
 
 <script src='https://code.jquery.com/jquery-3.5.0.js'></script>
 <script>
 $(document)
 .ready(function(){
-	
 	$.ajax({
 		url:'/hotel/ftitle',
+		data:{pageNum:$('input[name=pageNum]').val(),amount:$('input[name=amount]').val()},
 		datatype:'json',
 		method:'get',
 		beforeSend:function(){
-// 			$('#tbl_FAQList').empty();
+			$('#tbl_FAQList tbody').empty();
 		},
 		success:function(txt){
 			console.log(txt);
-			for(i=0; i<txt.length; i++){
-				
-				let str='<tr><td>'+txt[i]['post_code']+'</td><td>'+'<a href="/hotel/fcontent?post_code='+txt[i]['post_code']+'">'
-								  +txt[i]['title']+'</a></td><td>'
-								  +txt[i]['created']+'</td></tr>';
+			for(i=0; i<txt.length; i++){				
+				let str='<tr><td class="td_first">'+txt[i]['post_code']+
+						'</td><td class="td_second">'+'<a href="/hotel/fcontent?post_code='+txt[i]['post_code']+'">'
+						+txt[i]['title']+'</a></td><td class="td_third">'
+						+txt[i]['created']+'</td></tr>';
 				console.log(str);
-				
-				
 				$('#tbl_FAQList tbody').append(str);
 			}
 		}
@@ -122,6 +87,30 @@ $(document)
 })
 .on('click','#btn_FAQ',function(){
 	document.location="/hotel/fwrite"
+	return false;
+})
+.on('click','#page',function(){
+	$('input[name=pageNum]').val($(this).attr("href"));
+	$.ajax({
+		url:'/hotel/ftitle',
+		data:{pageNum:$('input[name=pageNum]').val(),amount:$('input[name=amount]').val()},
+		datatype:'json',
+		method:'get',
+		beforeSend:function(){
+			$('#tbl_FAQList tbody').empty();
+		},
+		success:function(txt){
+			console.log(txt);
+			for(i=0; i<txt.length; i++){				
+				let str='<tr><td class="td_first">'+txt[i]['post_code']+
+						'</td><td class="td_second">'+'<a href="/hotel/fcontent?post_code='+txt[i]['post_code']+'">'
+						+txt[i]['title']+'</a></td><td class="td_third">'
+						+txt[i]['created']+'</td></tr>';
+				console.log(str);
+				$('#tbl_FAQList tbody').append(str);
+			}
+		}
+	});
 	return false;
 })
 </script>

@@ -17,7 +17,7 @@
 	</select>
 	<!-- 직원용 예약가능방찾기 -->
 	<select id="getroom" resultType="com.team.hotel.Roomlist">
-	<![CDATA[select room_code, howmany, howmuch, name
+	<![CDATA[select room_code, howmany, howmuch, name ,type
     from room
     where howmany >= #{param4} and type=#{param1} and not room_code in(select a.room_code from book a,room b
     where a.room_code=b.room_code and 
@@ -50,31 +50,24 @@
 		delete from book where book_id=#{param1}
 	</delete>
 <!-- 승혁이형 -->
-	<insert id="addType">
-		insert into roomtype values(seq_type_code.nextval,#{param1})
-	</insert>
-	<select id="selType" resultType="com.team.hotel.roomtypeDTO">
-		select type_code,type_name from roomtype order by type_code
-	</select>
-	<delete id="delType">
-		delete from roomtype where type_code=#{param1}
-	</delete>
-	<update id="updType">
-		update roomtype set type_name=#{param2} where type_code=#{param1}
-	</update>
-<!-- roomcontrol -->
-	<insert id="addRoom">
-		insert into room values(seq_room_code.nextval, #{param1},#{param2},#{param3},#{param4})
-	</insert>
-	<select id="selRoom" resultType="com.team.hotel.roomDTO">
-		select a.room_code, a.name, b.type_name, a.howmany, a.howmuch from room a, roomtype b where a.type=b.type_code order by type_code
-	</select>
-	<delete id="delRoom">
-		delete from room where room_code=#{param1}
-	</delete>
-	<update id="updRoom">
-		update room set name=#{param2}, type=#{param3}, howmany=#{param4}, howmuch=#{param5} where room_code=#{param1}
-	</update>
+	<!-- interface name -->
+
+
+<insert id="addType"> insert into roomtype values(seq_type_code.nextval,#{param1}) </insert>
+
+<insert id="addRoom"> insert into room values(seq_room_code.nextval, #{param1},#{param2},#{param3},#{param4}) </insert>
+
+<select id="selType" resultType="com.team.hotel.roomtypeDTO"> select type_code,type_name from roomtype order by type_code </select>
+
+<select id="selRoom" resultType="com.team.hotel.roomDTO"> select a.room_code, a.name, b.type_name, a.howmany, a.howmuch from room a, roomtype b where a.type=b.type_code order by type_code </select>
+
+<delete id="delRoom"> delete from room where room_code=#{param1} </delete>
+
+<delete id="delType"> delete from roomtype where type_code=#{param1} </delete>
+
+<update id="updType"> update roomtype set type_name=#{param2} where type_code=#{param1} </update>
+
+<update id="updRoom"> update room set name=#{param2}, type=#{param3}, howmany=#{param4}, howmuch=#{param5} where room_code=#{param1} </update>
 <!-- 김유진씨 -->
 	<select id="usercheck" resultType="com.team.hotel.Member">
 	select userid,passcode,user_type from member where userid=#{param1}
@@ -97,23 +90,26 @@
 </delete>
 <!--                 회원가입/로그인/회원탈퇴/로그아웃                   -->
 <!-- 지명은씨 -->
-<select id="getBoardList" resultType="com.team.hotel.Board">
-    	select post_code, title, content, created
-    	from board
-    	order by post_code
-    </select>
-        <select id="getPost" resultType="com.team.hotel.Board">
-    	select post_code, title, content, created
-    	from board
-    	where post_code=#{param1}
-    </select>
-    <insert id="addBoard">
-    	insert into board values(seq_post_code.nextval,#{param1},#{param2},to_char(sysdate,'YYYY/MM/DD'))
-    </insert>
-    <update id="updateBoard">
-    	update board set title=#{param2}, content=#{param3} where post_code=#{param1}
-    </update>
-    <delete id="deleteBoard">
-    	delete from Board where post_code=#{param1}
-    </delete>
+
+<select resultType="com.team.hotel.Board" id="getBoardList">
+
+<![CDATA[
+	    select post_code,title,content,created 
+		from (select rownum as rn,post_code,title,content,created from board where rownum<=#{param1} order by post_code desc)
+		where rn>#{param2}
+		order by rn
+	]]>
+</select>
+
+<select resultType="com.team.hotel.Board" id="getPost">select post_code, title, content, created from board where post_code=#{param1} </select>
+
+<select resultType="com.team.hotel.Board" id="getListPaging">select post_code, title, content, created from(select post_code, title, content, created from board)where post_code between#{param1} and #{param2}order by post_code </select>
+
+<select resultType="int" id="getTotal">select count(post_code) from board </select>
+
+<insert id="addBoard">insert into board values(seq_post_code.nextval,#{param1},#{param2},to_char(sysdate,'YYYY/MM/DD')) </insert>
+
+<update id="updateBoard">update board set title=#{param2}, content=#{param3} where post_code=#{param1} </update>
+
+<delete id="deleteBoard">delete from Board where post_code=#{param1} </delete>
 </mapper>

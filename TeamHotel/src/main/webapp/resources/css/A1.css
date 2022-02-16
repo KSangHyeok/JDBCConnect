@@ -1,0 +1,17 @@
+@charset "EUC-KR";
+#div_body{
+      height:100vh;
+   }
+
+#div_1{
+		height:15vh;
+		float:left;
+		margin-left:2%;
+		width:100%;
+		background-color:#051e3e;
+	}
+	.info{
+		font-size:9pt;
+		color:#ffffff;
+		text-align:center;
+	}

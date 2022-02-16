@@ -37,4 +37,6 @@ public class Board {
 	public void setCreated(String created) {
 		this.created = created;
 	}
+	
+	
 }
