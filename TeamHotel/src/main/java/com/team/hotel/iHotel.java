@@ -3,10 +3,13 @@ package com.team.hotel;
 import java.util.ArrayList;
 
 public interface iHotel {
+	void Addbook(int room_code,String start_dt,String end_dt,int howmany,int howmuch,String booker,String mobile);
 	ArrayList<Typelist> gettype();
 	ArrayList<Roomlist> getroom(int type_code,String start_dt,String end_dt,int howmany);
+	ArrayList<Roombook> getroombook(int type_code,String start_dt,String end_dt,int howmany);
 	ArrayList<Roomlist> getroomname(int type);
 	ArrayList<Booklist> getbook();
+	ArrayList<Roomlist> getmuch(int room_code);
 	void insertbook(int room_code, String start_dt, String end_dt, int howmany, int howmuch, String booker, String mobile);
 	void deletebook(int book_id);
 	//승쨩

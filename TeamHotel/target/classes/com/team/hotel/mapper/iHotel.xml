@@ -3,10 +3,19 @@
     "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
     
 <mapper namespace="com.team.hotel.iHotel">
+	<!-- 예약 -->
+	<insert id="Addbook">
+		insert into book values(seq_book_id.nextval,#{param1},#{param2},#{param3},#{param4},#{param5},#{param6},#{param7})
+	</insert>
+	<!-- 룸코드로 가격찾기 -->
+	<select id="getmuch" resultType="com.team.hotel.Roomlist">
+	select howmuch from room where room_code=#{param1}
+	</select>
+	
 	<select id="gettype" resultType="com.team.hotel.Typelist">
 	select type_code,type_name from roomtype
 	</select>
-	
+	<!-- 직원용 예약가능방찾기 -->
 	<select id="getroom" resultType="com.team.hotel.Roomlist">
 	<![CDATA[select room_code, howmany, howmuch, name
     from room
@@ -15,7 +24,16 @@
     (a.start_dt <= #{param2} and a.end_dt >= #{param3} or a.start_dt >= #{param2} and a.end_dt <= #{param3}
     or a.start_dt <= #{param2} and a.end_dt >= #{param2} or a.start_dt <= #{param3} and a.end_dt >= #{param3})) ]]>
 	</select>
-	
+	<!-- 고객용 예약가능방검색 -->
+	<select id="getroombook" resultType="com.team.hotel.Roombook">
+	<![CDATA[select a.room_code as room_code, a.howmuch as howmuch, a.name as name, a.type as type, b.type_name as type_name
+    from room a,roomtype b
+    where a.type=b.type_code and
+	howmany >= #{param4} and type=#{param1} and not room_code in(select a.room_code from book a,room b
+    where a.room_code=b.room_code and 
+    (a.start_dt <= #{param2} and a.end_dt >= #{param3} or a.start_dt >= #{param2} and a.end_dt <= #{param3}
+    or a.start_dt <= #{param2} and a.end_dt >= #{param2} or a.start_dt <= #{param3} and a.end_dt >= #{param3})) ]]>
+	</select>
 	<select id="getroomname" resultType="com.team.hotel.Roomlist">
 	select room_code,name from room where type=#{param1}
 	</select>

@@ -130,6 +130,62 @@ public class HomeController {
 		}	
 	return ja.toString();
 	}
+	
+	@RequestMapping(value="/ok",method=RequestMethod.GET,
+            produces="application/json;charset=utf-8")
+	public String ok(HttpServletRequest hsr) {			
+		int room_code=Integer.parseInt(hsr.getParameter("room_code"));
+		String start_dt=hsr.getParameter("start_dt");
+		String end_dt=hsr.getParameter("end_dt");
+		int howmany=Integer.parseInt(hsr.getParameter("howmany"));
+		int howmuch=Integer.parseInt(hsr.getParameter("howmuch"));
+		String booker=hsr.getParameter("booker");
+		String mobile=hsr.getParameter("mobile");		
+		iHotel room=sqlSession.getMapper(iHotel.class);
+		room.Addbook(room_code,start_dt,end_dt,howmany,howmuch,booker,mobile);
+	return "redirect://";
+	}
+	//room code로 맞는 룸 가격부르기
+		@ResponseBody
+		@RequestMapping(value="/codemuch",method=RequestMethod.GET,
+	            produces="application/json;charset=utf-8")
+		public String getcodemuch(HttpServletRequest hsr) {
+			int room_code=Integer.parseInt(hsr.getParameter("room_code"));			
+			iHotel room=sqlSession.getMapper(iHotel.class);
+			ArrayList<Roomlist> list=room.getmuch(room_code);
+			System.out.println(list);
+			JSONArray ja=new JSONArray();
+			for(int i=0;i<list.size();i++) {
+				JSONObject jo=new JSONObject();
+				jo.put("howmuch",list.get(i).getHowmuch());		
+				ja.add(jo);
+			}	
+		return ja.toString();
+		}
+	//book room 검색
+	@ResponseBody
+	@RequestMapping(value="/roombook",method=RequestMethod.GET,
+            produces="application/json;charset=utf-8")
+	public String getRoombook(HttpServletRequest hsr) {
+		int type_code=Integer.parseInt(hsr.getParameter("type_code"));
+		String start_dt=hsr.getParameter("start_dt");
+		String end_dt=hsr.getParameter("end_dt");
+		int howmany=Integer.parseInt(hsr.getParameter("howmany"));
+		iHotel room=sqlSession.getMapper(iHotel.class);
+		ArrayList<Roombook> list=room.getroombook(type_code,start_dt,end_dt,howmany);
+		System.out.println(list);
+		JSONArray ja=new JSONArray();
+		for(int i=0;i<list.size();i++) {
+			JSONObject jo=new JSONObject();
+			jo.put("room_code",list.get(i).getRoom_code());
+			jo.put("name",list.get(i).getName());
+			jo.put("type",list.get(i).getType());			
+			jo.put("howmuch",list.get(i).getHowmuch());
+			jo.put("type_name",list.get(i).getType_name());
+			ja.add(jo);
+		}	
+	return ja.toString();
+	}
 	//객실타입 select
 	@ResponseBody
 	@RequestMapping(value="/typelist",method=RequestMethod.GET,

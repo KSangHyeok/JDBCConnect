@@ -21,7 +21,7 @@
           <a class="nav-link" href="/hotel/register">Register</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="/hotel/reservation">Reservation</a>
+          <a class="nav-link" href="/hotel/book">Reservation</a>
         </li>
         <li class="nav-item">
           <a class="nav-link" href="/hotel/flist">FAQ</a>
@@ -95,7 +95,7 @@
           <a class="nav-link" href="/hotel/account_delete">Account withdrawal</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="/hotel/reservation">Reservation</a>
+          <a class="nav-link" href="/hotel/book">Reservation</a>
         </li>
         <li class="nav-item">
           <a class="nav-link" href="/hotel/flist">FAQ</a>
